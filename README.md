@@ -6,6 +6,8 @@ Year: 2009
 
 The whole project in the Czech language.
 
+![Screenshot](web/3/park.png)
+
 ## Authors
 
 - Martin Galajda - roller coaster
