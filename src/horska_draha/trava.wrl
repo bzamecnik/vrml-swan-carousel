@@ -1,0 +1,423 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+Viewpoint {}
+
+NavigationInfo {}
+
+
+Group {
+	children [
+		Transform {
+			translation	-8 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 4
+					xSpacing 7
+					zSpacing 5
+					height[0 0 0,0 0 0,0 0 -0.3,0 0 -0.3]
+				}
+				appearance DEF trava Appearance {
+					material Material {
+						diffuseColor .04 .31 0
+						specularColor .25 .51 .01
+						ambientIntensity .02
+						shininess .12
+					}
+				}
+			}
+		}
+		Transform {
+			translation	-8 -0.035 13
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 4
+					xSpacing 7
+					zSpacing 1
+					height[0 0 -0.3, 0 0 -0.3, 0 0 -0.3, 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	5.9 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 6
+					xSpacing 25.5
+					zSpacing 1
+					height[0 0 ,0 25.5 , 0 25.5 , 0 25.5, 0 0, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	31.4 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 5
+					zDimension 6
+					xSpacing 0.97
+					zSpacing 1
+					height[0 0 0 0 0, 25.5 26.35 26.6 26.25 0 , 25.5 26.35 26.6 26.25 0, 25.5 26.35 26.6 26.25 0, 0 0 0 0 0, 0 0 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	5.9 -0.035 3
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 3
+					xSpacing 17.07
+					zSpacing 5
+					height[0 0 ,-0.3 -0.94 , -0.3 -0.94]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	5.9 -0.035 15
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 17.07
+					zSpacing 1
+					height[-0.3 -0.94, 0 0 ]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	22.97 -0.035 3
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 3
+					xSpacing 32
+					zSpacing 5
+					height[0 0, -0.94 -0.94, -0.94 -0.94]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	22.97 -0.035 13
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 32
+					zSpacing 2
+					height[-0.94 -0.94, -0.94 -0.94]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	22.97 -0.035 15
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 32
+					zSpacing 1
+					height[-0.94 -0.94, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	35.28 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 6
+					xSpacing 0.25
+					zSpacing 1
+					height[0 0 0 , 0 -2 -2.5 , 0 -2 -2.5 , 0 -2 -2.5, 0 0 0, 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	35.78 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 5
+					zDimension 6
+					xSpacing 1
+					zSpacing 1
+					height[0 0 0 0 0 , -2.5 -5 -6.5 -7.5 -8 , -2.5 -5 -6.5 -7.5 -8 , -2.5 -5 -6.5 -7.5 -8, 0 0 0 0 0, 0 0 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	39.78 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 4
+					zDimension 6
+					xSpacing 2
+					zSpacing 1
+					height[0 0 0 0, -8 -9 -9.5 -9.5 ,  -8 -9 -9.5 -9.5 , -8 -9 -9.5 -9.5, 0 0 0 0 , 0 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	45.78 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 4
+					zDimension 6
+					xSpacing 2
+					zSpacing 1
+					height[0 0 0 0, -9.5 -9.4 -8.5 -7.3,  -9.5 -9.4 -8.5 -7.3 ,-9.5 -9.4 -8.5 -7.3, 0 0 0 0, 0 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	51.78 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 6
+					xSpacing 7.2
+					zSpacing 1
+					height[0 0, -7.3 0, -7.3 0 ,-7.3 0, 0 0, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	58.98 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 6
+					xSpacing 6.2
+					zSpacing 1
+					height[0 0, 0 6.2, 0 6.2 ,0 6.2, 0 6.2, 0 6.2]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	65.18 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 3
+					xSpacing 0.75
+					zSpacing 1
+					height[0 0 0 ,6.2 6.69 6.83,6.2 6.69 6.83]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	65.18 -0.035 -1
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 2
+					xSpacing 0.75
+					zSpacing 15
+					height[6.2 6.69 6.83,6.2 6.69 6.83]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	65.18 -0.035 14
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 3
+					xSpacing 0.75
+					zSpacing 1
+					height[6.2 6.69 6.83,6.2 6.69 6.83,0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		Transform {
+			translation	58.98 -0.035 3
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 6.2
+					zSpacing 8
+					height[0 6.2, 0 6.2]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	58.98 -0.035 11
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 6
+					xSpacing 6.2
+					zSpacing 1
+					height[0 6.2, 0 6.2 ,0 6.2, 0 6.2, 0 6.2, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	66.68 -0.035 -2
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 3
+					xSpacing 6.5
+					zSpacing 1
+					height[0 0 0, 6.83 6.83 0,6.83 6.83 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	66.68 -0.035 -1
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 2
+					xSpacing 6.5
+					zSpacing 15
+					height[6.83 6.83 0,6.83 6.83 0,]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	66.68 -0.035 14
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 3
+					zDimension 3
+					xSpacing 6.5
+					zSpacing 1
+					height[6.83 6.83 0,6.83 6.83 0, 0 0 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	54.97 -0.035 3
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 3
+					xSpacing 4.01
+					zSpacing 5
+					height[0 0, -0.94 0, -0.94 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	54.97 -0.035 13
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 4.01
+					zSpacing 2
+					height[ -0.94 0,  -0.94 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	5.9 -0.035 13
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 17.07
+					zSpacing 2
+					height[ -0.3 -0.94, -0.3 -0.94]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	54.97 -0.035 15
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 4.01
+					zSpacing 1
+					height[-0.94 0, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+
+		Transform {
+			translation	-8 -0.035 -7
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 87.68
+					zSpacing 5
+					height[0 0, 0 0]
+				}
+			appearance USE trava
+			}
+		}
+	]
+}

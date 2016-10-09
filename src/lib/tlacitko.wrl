@@ -1,0 +1,224 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 13.12.2009"]
+	title "Tlacitko"
+}
+
+PROTO Tlacitko [
+	field SFBool zapnuto FALSE
+	field SFBool blikaci FALSE
+	eventOut SFBool zapnuto_changed
+	eventOut SFBool vypnuto_changed
+	eventOut SFTime touchTime
+	eventIn SFBool set_zapnuto
+	eventIn	SFBool set_povoleno
+	field SFNode barvaZapnuto Material {
+		diffuseColor 0 .224 0
+		specularColor .475 .71 .0588
+		emissiveColor 0 .75 0
+		ambientIntensity 1
+		shininess .055
+	}
+	field SFNode barvaVypnuto Material {
+		diffuseColor .54 0 0
+		specularColor .59 0 .13
+		emissiveColor .5 0 0
+		ambientIntensity .0467
+		shininess .06
+	}
+]
+{
+	DEF RoztahovaniTlacitka Transform {
+		children [
+			Shape {
+				geometry Cylinder {
+					radius 0.015
+					height 0.01
+					bottom FALSE
+				}
+				appearance DEF AppearanceTlacitka Appearance {
+				}
+			}
+			DEF Senzor TouchSensor	{}
+		]
+	}
+	DEF BlikaciCasovac TimeSensor {
+		cycleInterval 1
+		loop FALSE
+	}
+	DEF InterpolatorPolomeru PositionInterpolator {
+		# pro roztahovani a smrstovani polomeru tlacitka
+		key	[0 0.5 1]
+		keyValue [1 1 1, 1.5 1 1.5, 1 1 1]
+	}
+	DEF	ZigzagInterpolator ScalarInterpolator {
+		key	[0 0.5 1]
+		keyValue [0.5 1.25 0.5]
+	}
+	DEF InterpolatorIntenzity Script {
+		field SFColor zakladniBarva 0 0 0
+		eventIn	SFColor set_zakladniBarva
+		eventIn	SFFloat	set_fraction
+		eventOut SFColor value_changed
+		# pro plynule rozsveceni a zhasinani tlacitka
+		url "javascript:
+		function set_fraction(fraction) {
+			hsv = zakladniBarva.getHSV();
+			hsv[2] = hsv[2] * fraction;
+			barva = new SFColor();
+			barva.setHSV(hsv[0], hsv[1], hsv[2]);
+			value_changed = barva;
+		}
+		function set_zakladniBarva(barva) {
+			zakladniBarva = barva;
+		}
+		"
+	}
+	DEF Rizeni Script {
+		field SFBool zapnuto FALSE
+		eventIn SFBool set_zapnuto IS	set_zapnuto
+		eventOut SFTime touchTime IS touchTime
+		eventIn SFTime set_touchTime
+		eventOut SFBool zapnuto_changed IS zapnuto_changed
+		eventOut SFBool vypnuto_changed IS vypnuto_changed
+		eventIn	SFBool set_povoleno IS set_povoleno
+		eventOut SFBool povoleno_changed
+		field SFNode barvaZapnutoDefault IS barvaZapnuto
+		field SFNode barvaVypnutoDefault IS barvaVypnuto
+		field SFNode barvaZapnuto NULL
+		field SFNode barvaVypnuto NULL
+		field SFNode AppearanceTlacitka USE AppearanceTlacitka
+		field SFNode RoztahovaniTlacitka USE RoztahovaniTlacitka
+		field SFBool blikaci IS blikaci
+		field SFNode BlikaciCasovac USE BlikaciCasovac
+		field SFNode InterpolatorPolomeru USE InterpolatorPolomeru
+		field SFNode InterpolatorIntenzity USE InterpolatorIntenzity
+		directOutput TRUE
+		url	"javascript:
+		function initialize() {
+			// vytvor kopii materialu zadanych zvenci, aby se nemohly ovlivnovat
+			// mezi jednotlivymi instancemi Tlacitka
+			barvaVypnuto = copyMaterial(barvaVypnutoDefault);
+			barvaZapnuto = copyMaterial(barvaZapnutoDefault);
+
+			AppearanceTlacitka.set_material = barvaVypnuto;
+			if (blikaci) {
+				BlikaciCasovac.loop = true;
+				InterpolatorIntenzity.set_zakladniBarva = barvaVypnuto.emissiveColor;
+				Browser.addRoute(InterpolatorIntenzity, 'value_changed',
+					AppearanceTlacitka.material, 'set_emissiveColor');
+			}
+		}
+		function copyMaterial(staryMaterial) {
+			material = new SFNode('Material {}');
+			material.ambientIntensity = staryMaterial.ambientIntensity;
+			material.diffuseColor = staryMaterial.diffuseColor;
+			material.emissiveColor = staryMaterial.emissiveColor;
+			material.shininess = staryMaterial.shininess;
+			material.specularColor = staryMaterial.specularColor;
+			material.transparency = staryMaterial.transparency;
+			return material;
+		}
+		function set_zapnuto(value, cas) {
+			if (zapnuto == value) { return; }
+			touchTime = cas;
+			zapnuto = value;
+			zapnuto_changed = zapnuto;
+			vypnuto_changed = !zapnuto;
+			novyMaterial = zapnuto ? barvaZapnuto : barvaVypnuto;
+			posun = RoztahovaniTlacitka.translation;
+			posun.y += zapnuto ? -0.002 : 0.002;
+			RoztahovaniTlacitka.set_translation = posun;
+			Browser.deleteRoute(InterpolatorIntenzity, 'value_changed',
+					AppearanceTlacitka.material, 'set_emissiveColor');
+			AppearanceTlacitka.set_material = novyMaterial;
+			Browser.addRoute(InterpolatorIntenzity, 'value_changed',
+					AppearanceTlacitka.material, 'set_emissiveColor');
+			InterpolatorIntenzity.set_zakladniBarva = novyMaterial.emissiveColor;
+		}
+		function set_touchTime(value) {
+			set_zapnuto(!zapnuto, value);
+		}
+		function set_povoleno(value) {povoleno_changed = value;}
+		"
+	}
+	ROUTE Senzor.touchTime TO Rizeni.set_touchTime
+	ROUTE Rizeni.povoleno_changed TO Senzor.enabled	
+	ROUTE BlikaciCasovac.fraction_changed TO InterpolatorPolomeru.set_fraction
+	ROUTE BlikaciCasovac.fraction_changed TO ZigzagInterpolator.set_fraction
+	ROUTE ZigzagInterpolator.value_changed TO InterpolatorIntenzity.set_fraction
+	ROUTE InterpolatorPolomeru.value_changed TO	RoztahovaniTlacitka.set_scale
+}
+
+
+PROTO OvladaciPanelHUD [
+	field SFNode vzhledPanelu NULL
+	eventOut SFBool jeDen_changed
+	eventOut SFBool jePauza_changed
+] {
+	Group	{
+		children [
+			DEF Ramecek Shape {
+				geometry Box {
+					size 0.25 0.02 0.25
+				}
+				appearance IS vzhledPanelu
+			}
+			DEF Panel Shape {
+				geometry Box {
+					size 0.2 0.021 0.2
+				}
+				appearance Appearance {
+					material Material {
+						diffuseColor 0 0 0
+						specularColor .5 .5 .5
+						emissiveColor .15 .15 .15
+						ambientIntensity 0
+					}
+				
+				}
+			}
+			Transform {
+				translation	-0.05 0.011 0
+				children DEF TlacitkoDenNoc Tlacitko {
+					barvaVypnuto Material {
+						diffuseColor 0 .2 .8
+						specularColor .5 .5 .5
+						emissiveColor .122 .275 .482
+						ambientIntensity 0
+					}
+					barvaZapnuto Material {
+						diffuseColor .8 .63 0
+						specularColor .5 .5 .5
+						emissiveColor .69 .525 0
+						ambientIntensity 0
+					}
+				}
+			}
+			Transform {
+				translation	0.05 0.011 0
+				children DEF TlacitkoPauza Tlacitko {blikaci TRUE}
+			}
+		]
+	}
+	DEF	Rizeni Script {
+		eventIn	SFBool set_jeDen
+		eventOut SFBool jeDen_changed IS jeDen_changed
+		eventIn	SFBool set_jePauza
+		eventOut SFBool jePauza_changed IS jePauza_changed
+		directOutput TRUE
+		url "javascript:
+		function set_jeDen(value) {
+			jeDen_changed = value;
+		}
+		function set_jePauza(value) {
+			jePauza_changed = value;
+		}
+		"
+	}
+	ROUTE TlacitkoDenNoc.zapnuto_changed TO	Rizeni.set_jeDen
+	ROUTE TlacitkoPauza.zapnuto_changed TO Rizeni.set_jePauza
+}
+
+OvladaciPanelHUD {}

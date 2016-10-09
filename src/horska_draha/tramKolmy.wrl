@@ -1,0 +1,32 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tram [
+	field MFString texturaBrvna
+	field SFColor farbaBrvna
+	exposedField SFInt32 lod
+]
+"tram.wrl"
+
+PROTO tramKolmy [
+	field MFString texturaTramuKolmeho "textury/palisandr_indicky.jpg"
+	field SFColor farbaTramuKolmeho 0.453 0.367 0.312
+	exposedField SFInt32 lodTramuKolmeho 0
+]{
+	Group {
+		children
+		DEF	tramKolmy Transform {
+			rotation 0 0 1 -1.57 
+			children
+			tram {
+				texturaBrvna IS texturaTramuKolmeho
+				farbaBrvna IS farbaTramuKolmeho
+				lod	IS lodTramuKolmeho
+			}
+		}
+	}
+}

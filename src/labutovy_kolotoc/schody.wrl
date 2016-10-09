@@ -1,0 +1,281 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 5.11.2009"]
+	title "Labuti kolotoc - schodiste"
+}
+
+PROTO Tycka [
+	field SFNode material NULL
+	field SFBool konce FALSE
+]
+{
+	Transform {
+		translation	0 0.51 0.08
+		children
+		Shape {
+			geometry Cylinder {
+				radius 0.02
+				height 1
+				bottom IS konce
+				top IS konce
+			}
+			appearance Appearance {
+				material IS	material
+			}
+		}
+
+	}
+}
+
+PROTO Schod [
+	field SFVec3f rozmery 2.5 0.05 0.3
+	field SFNode materialSchodu NULL
+	field SFNode texturaSchodu NULL
+]
+{
+	Shape {
+		geometry Box {
+			size IS	rozmery
+		}
+		appearance Appearance {
+			material IS	materialSchodu
+			texture	IS texturaSchodu
+			textureTransform TextureTransform {
+				scale 8.3 1
+			}
+		}
+	}
+}
+
+PROTO Schodiste [
+	field SFNode materialSchodu NULL
+	field SFNode materialNosniku NULL
+	field SFNode texturaSchodu NULL
+] {
+	LOD	{
+		range [ 40 60 70 ]
+		level [
+			# level 0
+			DEF Schodiste_LOD0 Group {
+				children [
+					DEF	Jednotlive_schody Group	{
+						children [
+							Transform {
+								translation	0 1.01 0
+								children
+								DEF Jeden_schod Group {
+									children	[
+										Schod {
+											texturaSchodu IS texturaSchodu
+											materialSchodu IS materialSchodu
+										}
+										LOD	{
+											range [ 7 25 ]
+											level [
+												# level 0
+												DEF Tycky_LOD0 Group {
+													children [
+														Transform {
+															translation	1.1 0 0
+															children
+															DEF	Tycka Tycka	{
+																material IS	materialNosniku
+															}
+														}
+														Transform {
+															translation	-1.1 0 0
+															children USE Tycka
+														}
+													]
+												}
+												# level 1
+												Group {
+													children [
+														Transform {
+															translation	1.1 0.51 0.08
+															children
+															DEF	Tycka_level1
+															Shape {
+																geometry Box {
+																	size 0.04 1 0.04
+																}
+																appearance Appearance {
+																	material IS	materialNosniku
+																}
+															}
+														}
+														Transform {
+															translation	-1.1 0.51 0.08
+															children USE Tycka_level1
+														}
+													]
+												}
+												# level 2
+												Group {}
+											]
+										}
+									]
+								}
+							}
+							Transform {
+								translation	0 0.8 0.3
+								children
+								USE Jeden_schod
+							}
+							Transform {
+								translation	0 0.6 0.6
+								children
+								USE Jeden_schod
+							}
+							Transform {
+								translation	0 0.4 0.9
+								children
+								USE Jeden_schod
+							}
+							Transform {
+								translation	0 0.2 1.2
+								children
+								USE Jeden_schod
+							}
+						]
+					}
+					DEF	Nosna_konstrukce Group {
+						children  [
+							# spodni blok pro uchyceni nosniku
+							Transform {
+								translation	0 0.1 1.2
+								children
+								DEF Blok_uchyt Shape {
+									geometry Box {
+										size 2.3 0.2 0.2
+									}
+									appearance Appearance {
+										material IS	materialNosniku
+									}
+								}
+							}
+							# horni blok pro uchyceni nosniku
+							Transform {
+								translation	0 0.9 0
+								children
+								USE	Blok_uchyt
+							}
+							DEF Nosniky Group {
+								children [
+									# prostredni sikmy nosnik schodu
+									DEF Nosnik_schodiste Transform {
+										rotation 1 0 0 0.595
+										center 0 0 1
+										translation 0 0 0.45
+										children
+										Transform {
+											rotation 0 1 0 1.570796
+											children
+											Shape {
+												geometry Box {
+													size 1.5 0.1 0.1
+												}
+												appearance Appearance {
+													material IS	materialNosniku
+												}
+											}
+										}
+									}
+									# pravy sikmy nosnik schodu
+									Transform {
+										translation	1.1 0 0
+										children
+										USE	Nosnik_schodiste
+									}
+									# levy sikmy nosnik schodu
+									Transform {
+										translation	-1.1 0 0
+										children
+										USE	Nosnik_schodiste
+									}
+								]
+							}
+						]
+					}
+					DEF Zabradli Group {
+						children [
+							Transform {
+								translation	1.1 0 0
+								children
+								DEF Jedno_zabradli Transform {
+									rotation 1 0 0 0.595
+									center 0 0 1
+									translation 0 1.04 0.53
+									children
+									Transform {
+										rotation 1 0 0 1.570796
+										children
+										LOD	{
+											range [ 8 ]
+											level [
+												# level 0
+												DEF Tycka_LOD0 Shape {
+													geometry Cylinder {
+														radius 0.02
+														height 2
+													}
+													appearance Appearance {
+														material IS	materialNosniku
+													}
+												}
+												# level 1
+												Shape {
+													geometry Box {
+														size 0.04 2 0.04
+													}
+													appearance Appearance {
+														material IS	materialNosniku
+													}
+												}
+											]
+										}
+									}
+								}
+							}
+							Transform {
+								translation	-1.1 0 0
+								children USE Jedno_zabradli
+							}
+						]
+					}
+				]
+			}
+			# level 1 - bez zabradli
+			Group {
+				children [
+					USE Jednotlive_schody
+					USE	Nosniky
+				]
+			}
+			# level 2
+			USE Jednotlive_schody
+			# level 3 - pouze sikma rampa misto schodu
+			Transform {
+				rotation 1 0 0 -0.88
+				center 0 1 0
+				translation 0 0.05 0
+				children
+				Transform {
+					rotation 1 0 0 1.570796
+					children
+					Shape {
+						geometry Box {
+							size 2.5 0.05 2
+						}
+						appearance Appearance {
+							material IS materialSchodu
+						}
+					}
+				}
+			}
+		]
+	}
+}
+
+Schodiste {}

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta name="http-equiv" content="content-type: text/html; charset=cp1250">
+    <title>Virtuální realita - úlohy</title>
+    <style>
+      body {
+				margin: 0 10%;
+				padding: 1em 2em;
+				background-color: #EEA;
+				border: 10px solid #E90;
+				border-top-width: 2em;
+				border-bottom-width: 2em;
+				font-family: sans-serif; 
+			}
+			a {
+				color: #C60;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			table,th,td {
+				border: 1px #000 solid
+			}
+    </style>
+  </head>
+  <body>
+    <h1>Virtuální realita - úlohy</h1>
+    <h2>Úloha č. 2 - Svět s detaily</h2>
+    <h3>Popis záhlaví prototypů</h3>
+    
+    <h4>Autodrom</h4>
+    
+    <pre>    
+EXTERNPROTO autodrom [
+    field SFInt32 lod
+    field SFColor color
+    field SFNode texture
+    field SFInt32 layoutChoice
+] "autodrom/Autodrom.wrl#autodrom"
+		</pre>
+
+		<ul>
+			<li><code>lod</code> - použití dynamické úrovně detailu (Level of Detail), 0 = vypnuto, 1 = zapnuto</li>
+			<li><code>color</code> - barva, která se použije pro podstavu a pilíře</li>
+			<li><code>texture</code> - textura autíček</li>
+			<li><code>layoutChoice</code> - parametr (0-1) pro výber přednastaveného rozmístění a počtu autíček.</li>
+		</ul>
+    
+    <h4>Horská dráha</h4>
+    
+    <pre>    
+EXTERNPROTO RollerCoster [
+    	field SFInt32 lod 
+	field MFString texturaVlaku
+	field SFColor farbaVlaku
+	field MFString texturaTramu
+	field SFColor farbaTramuRollerky
+] "horska_draha\scene.wrl#RollerCoster"
+		</pre>
+
+		<ul>
+			<li><code>lod</code> - použití dynamické úrovně detailu (Level of Detail), 0 = vypnuto, 1 = zapnuto</li>
+			<li><code>texturaVlakur</code> - textura ktora sa nanesie na vlak v najvyssom LOD a s vypnutym LOD</li>
+			<li><code>farbaVlaku</code> - farba vlaku ktora bude nanesena pod texturou</li>
+			<li><code>texturaTramu</code> - textura ktora sa bude nanasat na tram</li>
+			<li><code>farbaTramuRollerky</code> - farba ktora sa nanesie pod texturu na tram </li>
+		</ul>
+    
+    <h4>Labuťový kolotoč</h4>
+
+		<pre>    
+EXTERNPROTO Labutovy_kolotoc [
+	field SFInt32 lod
+	field SFColor vyraznaBarva
+	field SFNode texturaPlechu
+] "labutovy_kolotoc/labutovy-kolotoc.wrl#Labutovy_kolotoc"
+		</pre>
+
+		<ul>
+			<li><code>lod</code> - použití dynamické úrovně detailu (Level of Detail), 0 = vypnuto, 1 = zapnuto</li>
+			<li><code>vyraznaBarva</code> - barva, která se použije pro různé zajímavé části kolotoče</li>
+			<li><code>texturaPlechu</code> - textura podlahového plechu pro podstavu a schody</li>
+		</ul>
+		
+		<p>Poznámka: LOD je použito u jednotlivých komponent, tudíž existuje jemnější dělení než 3 varianty na nejvyšší úrovni.</p>
+		
+		<p><a href="index.html">Zpět na stránku úlohy</a>.</p>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta name="http-equiv" content="content-type: text/html; charset=cp1250">
+    <title>Virtuální realita - úlohy</title>
+    <style>
+      body {
+				margin: 0 10%;
+				padding: 1em 2em;
+				background-color: #EEA;
+				border: 10px solid #E90;
+				border-top-width: 2em;
+				border-bottom-width: 2em;
+				font-family: sans-serif; 
+			}
+			a {
+				color: #C60;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			table,th,td {
+				border: 1px #000 solid
+			}
+    </style>
+  </head>
+  <body>
+    <h1>Virtuální realita - úlohy</h1>
+    <h2>Úloha č. 2 - Svět s detaily</h2>
+    <h3>Zadání</h3>
+    <p>Přetvořte model z úlohy č. 1:<p>
+    <ul>
+	    <li>Model bude definován jako prototyp (v samostatném souboru), obsahující různé stupně detailu pro různé součásti. Zaveďte nejméně 3 různé stupně detailu. Parametrem prototypu bude volba, zda vlastnost LOD má být zapnuta či vypnuta (viz následující tabulka), volba barvy nějaké části modelu a volba textury použité na nějakou část modelu.</li>
+	    <li>Každá instance prototypu ve scéně nechť využívá odlišné textury a barvy (alespoň pro některé své části).</li>
+	    <li>V modelu použijte nejméně jeden geometrický prvek odlišný od základních těles. Jeho tvar můžete vymodelovat v externím modeláři (např. Blender) a šikovně exportovat do VRML. Vylepšete tak tvar modelu.</li>
+	    <li>Textury aplikujte pouze pro nejlepší kvalitu LOD. Součet dekomprimovaných velikostí všech textur týmu nesmí přesáhnout 16 MB. Výpočet potřebné texturovací paměti uveďte na příslušnou webovou stránku.</li>
+	    <li>K úloze vytvořte v adresáři /2 příslušné stránky s informacemi o vlastnostech virtuální scény (okomentovaná záhlaví prototypů). Testovací scéna bude totožná se scénou z minulé úlohy, bude však existovat ve dvou verzích - se zapnutým a s vypnutým LOD pro všechny modely ve scéně.</li>
+	    <li>Proveďte měření snímkové rychlosti pro různé stupně detailu, které zveřejníte v souboru detaily.html.</li>
+	    <li>Všechny WRL soubory ukládejte na disk v komprimované podobě.</li>
+    </ul>
+    
+    <h4>Jak měřit Snímkovou rychlost:</h4>
+    <ul>
+      <li>Do scény přidejte ještě další nová stanoviště pro měření fps, umístěná v různých vzdálenostech příslušných danému stupni detailu (pro každou vzdálenost dvojice stanovišť umístěná vedle sebe s rozdílem polohy cca 1 m v levopravém směru). Kolik stupňů LOD, tolik dvojic měřicích stanovišť. Zorný úhel a umístění stanovišť volte tak, aby z nich byly vidět všechny objekty naráz.</li>
+      <li>Samotná měření provádějte při přepínání (PgUp, PgDn) mezi danými dvojicemi stanovišť v pevně daném "EMBED" okénku o velikosti 800x600 pixelů. Příklad použití značky EMBED: <code>&lt;embed src=&quot;scena.wrl&quot; border=0 width=&quot;800&quot; height=&quot;600&quot;&gt;</code>.</li>
+      <li>Měření pochopitelně proveďte pro obě (obsahově totožné) scény: s LOD i bez LOD. Na tyto scény umístěte odkazy z HTML stránky.</li>
+      <li>Výsledky měření (včetně poměru fps pro verzi s/bez LOD) uspořádejte do přehledné tabulky doplněné vysvětlujícím textem. Tabulku doplňte grafem.</li>
+    </ul>
+    
+		<h3>Vypracování</h3>
+		
+		<p><a href="park.png" alt="park z 2. úlohy"><img src="obr.jpg" alt="náhled"></a></p>
+		
+    <ul>
+      <li><a href="scena-lod.html">VRML scéna s LOD (Level of Detail)</a></li>
+      <li><a href="scena-nolod.html">VRML scéna bez LOD</a></li>
+		  <li><a href="vse.zip">ZIP ke stažení</a></li>
+		  <li><a href="textury.html">Přehled textur a výpočet texturovací paměti</a></li>
+		  <li><a href="prototypy.html">Popis záhlaví prototypů</a></li>
+		  <li><a href="detaily.html">Detaily měření FPS</a></li>
+		</ul>
+		
+		<h3>Autoři</h3>
+		
+		<p>
+		Tým č. 1: Martin Galajda, Ivan Jankovič, Bohumír Zamečník.
+		<a href="http://mff.zamecnik.org/virtualni-realita/PGR012/">Hlavní stránka týmu</a>.
+		</p>
+  </body>
+</html>

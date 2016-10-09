@@ -1,0 +1,97 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+PROTO Koliesko [
+	field MFString texturaKolieska "../textury/iron.jpg"
+	field SFColor farbaKolieska  .494 .231 .125
+	exposedField SFInt32 loLodKolieska 0
+]{
+	Switch {
+		whichChoice	IS loLodKolieska
+		choice [
+			DEF kolieskoPerfect Group {
+				children [	 
+					Transform{
+						translation	0 0.05 0
+						children
+						Shape {
+							appearance DEF ironRustyT Appearance {
+								texture	ImageTexture {
+									url IS texturaKolieska
+								}
+							}
+							geometry Cylinder {
+								height 0.05
+								radius 0.2
+							}
+						}
+					}
+					Transform {
+						children
+						Shape {						
+							appearance USE ironRustyT
+							geometry Cylinder {
+								height 0.05
+								radius 0.25
+							}
+						}
+					}
+				]
+			}
+			LOD	{
+				range [25,37.5,125]
+				level [
+					USE	kolieskoPerfect
+					Group {
+						children [	 
+							Transform{
+								translation	0 0.05 0
+								children
+								Shape {
+									appearance DEF ironRustyC Appearance {
+										material Material {
+											diffuseColor IS	farbaKolieska
+											ambientIntensity 0.550
+										}
+									}
+									geometry Cylinder {
+										height 0.05
+										radius 0.2
+									}
+								}
+							}
+							Transform {
+								children
+								Shape {						
+									appearance USE ironRustyC
+									geometry Cylinder {
+										height 0.05
+										radius 0.25
+									}
+								}
+							}
+						]
+					}	 
+					Transform{
+						translation	0 0.05 0
+						children
+						Shape {
+							appearance USE ironRustyC
+							geometry Cylinder {
+								height 0.05
+								radius 0.2
+							}
+						}
+					}
+					Group {
+
+					}
+				]
+			}
+		]
+	}	
+}

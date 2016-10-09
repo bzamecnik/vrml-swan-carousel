@@ -1,0 +1,353 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 23.11.2009"]
+	title "Labuti kolotoc - rotacni cast kolotoce"
+}
+
+EXTERNPROTO	Labut [
+	field SFBool funkcniLabut
+	eventOut SFTime touchTime
+	eventOut SFFloat hodnotaPaky_changed
+	eventOut SFBool tlacitkoZapnuto_changed
+	eventOut SFTime tlacitkoTouchTime_changed
+	eventIn SFFloat set_initHodnotaPaky
+] "labut.wrl#Labut"
+
+#EXTERNPROTO	Rameno [
+#	field SFFloat uhel_zvednuti_nosniku
+#	eventIn SFFloat set_uhel_zvednuti_nosniku
+#	field SFFloat uhel_zvednuti_nosniku_min
+#	field SFFloat uhel_zvednuti_nosniku_max
+#	field SFFloat vyska_uchyceni_ramena
+#	field SFFloat vyska_uchyceni_pistu
+#	field SFFloat polomer_zakladny_rotoru
+#	field SFFloat uhel_zaklonu_rotoru
+#	field SFFloat sbc # vzdalenost od upevneni nosniku po upevneni pistu k nosniku
+#	field SFFloat tloustka_nosniku
+#	field SFNode Umisteni_sedacky
+#	field SFNode material
+#	field SFInt32 cisloRamene
+#	eventOut SFInt32 aktivniRameno_changed
+#	eventOut SFTime otaceniAktivni_changed
+#] "rameno.wrl#Rameno"
+
+EXTERNPROTO Pauzovadlo [
+	eventIn SFTime set_pocatek
+	eventIn SFTime set_periodaCasovace
+	eventIn	SFBool zapni
+	eventIn	SFTime prepni
+	eventIn	SFBool set_pauza
+	eventOut SFTime startTime_changed
+	eventOut SFTime stopTime_changed
+	eventOut SFBool zapnuto_changed
+] "pauza.wrl#Pauzovadlo"
+
+PROTO Rotor [
+	field SFNode barevnyMaterial NULL
+	field SFInt32 pocetRamen 8
+	eventIn SFTime prepnuti
+	eventIn SFBool set_otaceni_vypnuto
+	eventIn SFBool set_otaceni_zapnuto
+	eventIn SFBool set_senzoryPovoleny
+	eventIn SFBool set_jePauza
+	field SFString dirPrefix "."	
+]
+{
+	DEF Rotor_T Transform {
+		children
+		Group {
+			children [
+				DEF Kuzel_rotoru Transform {
+					translation 0 1.5 0
+					children
+					# hlavni cast rotoru
+					# sprave by to mel byt komoly kuzel (-> Extrusion)
+					Shape {
+						geometry Cone	{
+							height 3
+							bottomRadius 0.5
+							bottom FALSE
+						}
+						appearance Appearance {
+							material DEF Material_kuzele Material {
+								diffuseColor .89 .73 .34
+								ambientIntensity .0933
+								shininess .31
+								specularColor .27 .13 .13
+							}
+						}
+					}
+				}
+				# 
+				DEF Dekorace_rotoru Transform {
+					translation 0 2.8 0
+					children
+					Labut {funkcniLabut FALSE}
+				}
+				# jednotliva ramena, rovnomerne rozprostrena kolem rotoru,
+				# jsou generovana skriptem
+				DEF Ramena Group {}
+				DEF	Hudba_kolotoce Sound {
+					minFront 10
+					maxFront 50
+					minBack 10
+					maxBack 50
+					source DEF Hudba_kolotoce_clip AudioClip {
+						loop TRUE
+						startTime -1
+						stopTime 0
+						# the url is set in the script's initialization
+					}
+				}
+			]
+		}
+	}
+#	DEF	Rotor_otaceni_interpolator OrientationInterpolator {
+#		key	[0 .25 .5 .75 1]
+#		keyValue [0 1 0 0, 0 1 0 1.57, 0 1 0 3.14, 0 1 0 -1.57, 0 1 0 0]
+#	}
+	DEF Rotor_otaceni_interpolator OrientationInterpolator {
+		key [0 0.5 1]
+		keyValue [0 1 0 0, 0 1 0 3.14, 0 1 0 6.28]
+	}
+	DEF	Barevny_interpolator Script {
+		field SFColor barva 0.7 0.7 0.7
+		eventIn SFColor set_barva
+		eventIn SFFloat set_fraction
+		eventOut SFColor value_changed
+		url "javascript:
+		function set_fraction(fraction) {
+			hsv = barva.getHSV();
+			hsv[0] = fraction;
+			barva.setHSV(hsv[0], hsv[1], hsv[2]);
+			value_changed = barva;
+		}
+		function set_barva(value) {
+			barva = value;
+		}
+		"
+	}
+	DEF	Casovac_rotoru TimeSensor {
+		cycleInterval 20
+		loop TRUE
+		startTime -1
+		stopTime 0
+	}
+	DEF	PauzovadloZvuku Pauzovadlo {}
+	DEF	PauzovadloOtaceni Pauzovadlo {}
+	DEF Rizeni_rotoru Script {
+		field SFBool otaceni_zapnuto FALSE
+		eventIn	SFBool set_otaceni_zapnuto IS set_otaceni_zapnuto
+		eventIn	SFBool set_otaceni_vypnuto IS set_otaceni_vypnuto
+		eventIn SFBool set_senzoryPovoleny IS set_senzoryPovoleny
+		eventIn SFBool set_jePauza IS set_jePauza
+		eventOut SFBool jePauza_changed
+		eventOut SFBool senzoryPovoleny_changed
+		field SFTime start 0
+		field SFTime stop 0
+		eventIn SFTime set_stop
+		eventIn SFTime set_start
+		eventIn SFTime prepnuti IS prepnuti
+		eventOut SFTime prepnuto
+		eventOut SFTime start_changed
+		eventOut SFTime stop_changed
+		eventOut MFNode	novaRamena
+		eventIn MFNode nastavRamena
+		field SFNode barevnyMaterial IS	barevnyMaterial
+
+		field SFNode PauzovadloZvuku USE PauzovadloZvuku
+		field SFNode PauzovadloOtaceni USE PauzovadloOtaceni
+
+		field SFNode Rizeni_rotoru USE Rizeni_rotoru
+		field SFInt32 aktivniRameno -1
+		eventIn SFInt32 set_aktivniRameno
+		eventOut SFInt32 aktivniRameno_changed
+		eventIn SFTime set_automatickeZvedaniRamen
+		field SFInt32 pocetRamen IS	pocetRamen
+		field SFString dirPrefix IS	dirPrefix
+		field SFNode Ramena USE	Ramena
+		field SFNode Material_kuzele USE Material_kuzele
+		field SFNode Barevny_interpolator USE Barevny_interpolator
+		field SFNode Hudba_kolotoce_clip USE Hudba_kolotoce_clip
+		eventIn	SFColor	set_barva_kuzele
+
+		directOutput TRUE
+		url	"javascript:
+		function initialize() {
+			Barevny_interpolator.set_barva = Material_kuzele.diffuseColor;
+			// music credits: Carlos Jobim Desafinado (sequenced by David J.Lahey)
+			// http://jawor.jazz.midi.fm.interia.pl/music/latin/jobim_desafinado_2.zip
+			Hudba_kolotoce_clip.url = new MFString(dirPrefix + '/jobim_desafinado_2.mid');
+			vytvorRamena(pocetRamen);
+		}
+		function vytvorRamena(pocetRamen) {
+//			print('barevnyMaterial: ' + barevnyMaterial); // DEBUG
+			barevnyMaterialStr = 'Material {' +
+				' ambientIntensity ' + barevnyMaterial.ambientIntensity +
+				' diffuseColor ' + barevnyMaterial.diffuseColor +
+				' emissiveColor ' + barevnyMaterial.emissiveColor +
+				' shininess ' + barevnyMaterial.shininess +
+				' specularColor ' + barevnyMaterial.specularColor +
+				' transparency ' + barevnyMaterial.transparency + ' }';
+			exernProtoStr = 'EXTERNPROTO KonkretniRameno [' +
+			'  field SFFloat uhel_zvednuti_nosniku ' +
+			'  field SFNode barevnyMaterial' +
+			'  field SFInt32 cisloRamene ' +
+			'  eventOut SFInt32 aktivniRameno_changed ' +
+			'  eventOut SFTime otaceniAktivni_changed ' +
+			'  eventIn SFBool set_labutAktivni' +
+			'  eventIn SFBool set_labutPripravena' +
+			'  eventIn SFBool set_jePauza' +
+			'  eventIn SFTime prepniAutomatickeZvedani' +
+			'] \"' + dirPrefix + '/rameno.wrl#KonkretniRameno\"\n\n';
+			ramenaStr = exernProtoStr;
+			uhelOtoceni = 0;
+			deltaOtoceni = 2 * Math.PI / pocetRamen;
+			minUhelZvednuti = 0.4;
+			maxUhelZvednuti = 1.85;
+			uhelZvednuti =minUhelZvednuti;
+			deltaZvednuti = (maxUhelZvednuti - minUhelZvednuti) / (pocetRamen - 1);
+			for (i = 0; i < pocetRamen; i++) {
+				ramenaStr += ' Transform {\n' +
+					' rotation 0 1 0 ' + uhelOtoceni +
+					' children ' +
+					' KonkretniRameno {\n' +
+					'  uhel_zvednuti_nosniku ' + uhelZvednuti +
+					'  cisloRamene '+ (i+1) +
+					'  barevnyMaterial ' + barevnyMaterialStr +
+					'}\n}\n';
+				uhelOtoceni += deltaOtoceni;
+				uhelZvednuti += deltaZvednuti;
+			}			
+//			print(ramenaStr); // DEBUG
+			novaRamena = Browser.createVrmlFromString(ramenaStr);
+		}
+		function nastavRamena(ramena) {
+			for (i = 0; i < ramena.length; i++) {
+				if (ramena[i].children[0].getType() == 'KonkretniRameno') {
+					Browser.addRoute(
+						ramena[i].children[0], 'aktivniRameno_changed',
+						Rizeni_rotoru, 'set_aktivniRameno'
+					);
+					Browser.addRoute(
+						ramena[i].children[0], 'otaceniAktivni_changed',
+						Rizeni_rotoru, 'prepnuti'
+					);
+					Browser.addRoute(
+						Rizeni_rotoru, 'prepnuto',
+						ramena[i].children[0], 'prepniAutomatickeZvedani'
+					);
+					Browser.addRoute(
+						Rizeni_rotoru, 'jePauza_changed',
+						ramena[i].children[0], 'set_jePauza'
+					);
+				}
+			}
+		}
+		function set_aktivniRameno(value) {
+			//print('aktivni rameno: ' + aktivniRameno + ', nova hodnota: ' + value);
+			ramena = Ramena.children;
+			if (aktivniRameno > 0) {
+				//print('delete ' + (aktivniRameno-1));
+				Browser.deleteRoute(
+					Rizeni_rotoru, 'prepnuto',
+					ramena[aktivniRameno-1].children[0], 'prepniAutomatickeZvedani'
+				);
+				aktivniRameno = -1; // deaktivace ramena
+			} else {
+				aktivniRameno = value;
+				//print('add ' + (aktivniRameno-1));
+				Browser.addRoute(
+					Rizeni_rotoru, 'prepnuto',
+					ramena[aktivniRameno-1].children[0], 'prepniAutomatickeZvedani'
+				);
+			}
+			aktivniRameno_changed = aktivniRameno;
+			for (i = 0; i < ramena.length; i++) {
+				ramena[i].children[0].set_labutAktivni = ((i+1) == aktivniRameno);
+				//print('pripravena['+i+']: ' + ((-1 == aktivniRameno) || ((i+1) == aktivniRameno)));
+				ramena[i].children[0].set_labutPripravena = ((-1 == aktivniRameno) || ((i+1) == aktivniRameno));
+			}
+			//print('aktivni rameno: ' + aktivniRameno);
+		}
+		function set_stop(time) {
+			if (!otaceni_zapnuto) {
+				stop = time;
+				stop_changed = stop;
+			}
+		}
+		function set_start(time) {			
+			if (otaceni_zapnuto) {
+				start = start + time - stop;
+				start_changed = start;
+				stop_changed = -1;
+			}
+		}
+		function set_otaceni_zapnuto(value, time) {
+			otaceni_zapnuto = value;
+			PauzovadloZvuku.zapni = otaceni_zapnuto;
+			if (otaceni_zapnuto) {
+				//Hudba_kolotoce_clip.set_startTime = time;
+				// TODO: zde by to chtelo plynuly dojezd
+				ramena = Ramena.children;
+				for (i = 0; i < ramena.length; i++) {
+					ramena[i].children[0].spustitRamenoDolu = time;
+				}
+				//set_start(time + 10.0);
+			} else {
+				//Hudba_kolotoce_clip.set_stopTime = time + 10.0;
+				// TODO: zde by to chtelo plynuly dojezd
+				//set_stop(time + 10.0);
+				// spustime ramena dolu pro nastup
+				ramena = Ramena.children;
+				for (i = 0; i < ramena.length; i++) {
+					ramena[i].children[0].spustitRamenoDolu = time;
+				}
+			}
+		}
+		function set_otaceni_vypnuto(value, time) {
+			set_otaceni_zapnuto(false, time);
+		}
+		function set_jePauza(value) {
+			jePauza_changed = value;
+			senzoryPovoleny_changed = !value;
+		}
+		function prepnuti(time) {
+			// demo = rotor se toci, ramena se automaticky hybou nahoru-dolu
+			set_otaceni_zapnuto(!otaceni_zapnuto, time);
+			prepnuto = time;
+		}
+		function set_barva_kuzele(barva) {
+			Material_kuzele.diffuseColor = barva;
+		}
+		"
+	}
+#	ROUTE Rizeni_rotoru.start_changed TO Casovac_rotoru. startTime
+#	ROUTE Rizeni_rotoru.stop_changed TO Casovac_rotoru.stopTime
+	ROUTE Casovac_rotoru.fraction_changed TO Rotor_otaceni_interpolator.set_fraction
+	ROUTE Casovac_rotoru.fraction_changed TO Barevny_interpolator.set_fraction
+	ROUTE Barevny_interpolator.value_changed TO	Rizeni_rotoru.set_barva_kuzele
+	ROUTE Rotor_otaceni_interpolator.value_changed TO Rotor_T.rotation
+	ROUTE Rizeni_rotoru.novaRamena TO Ramena.addChildren
+	ROUTE Ramena.children_changed TO Rizeni_rotoru.nastavRamena
+
+	ROUTE Rizeni_rotoru.jePauza_changed TO PauzovadloZvuku.set_pauza
+	ROUTE PauzovadloZvuku.startTime_changed TO Hudba_kolotoce_clip.startTime
+	ROUTE PauzovadloZvuku.stopTime_changed TO Hudba_kolotoce_clip.stopTime
+
+	ROUTE Rizeni_rotoru.jePauza_changed	TO PauzovadloOtaceni.set_pauza
+	ROUTE PauzovadloOtaceni.startTime_changed TO Casovac_rotoru.startTime
+	ROUTE PauzovadloOtaceni.stopTime_changed TO Casovac_rotoru.stopTime
+	ROUTE Rizeni_rotoru.prepnuto TO	PauzovadloOtaceni.prepni
+	#ROUTE PauzovadloOtaceni.zapnuto_changed	TO Casovac_rotoru.loop
+}
+
+Rotor {
+	barevnyMaterial	Material {
+		diffuseColor .55 .09 .05
+		specularColor .25 .25 .25
+		ambientIntensity .6
+		specularColor .251 .251 .251
+	}
+}

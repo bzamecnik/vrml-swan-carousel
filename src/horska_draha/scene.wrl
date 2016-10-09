@@ -1,0 +1,496 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+Viewpoint {
+	position 0 1.6 10
+}
+NavigationInfo {
+	type ["WALK", "ANY"]
+}
+
+EXTERNPROTO	vlacik [
+	field MFString texturaVlacika
+	field SFColor farbaVlacika
+	exposedField SFInt32 loLod
+]
+"vlacik/vlacik.wrl"
+
+EXTERNPROTO	rollercoster [
+	field MFString texturaTramuRollerky
+	field SFColor farbaTramuRollerky
+	exposedField SFInt32 loLodRoller
+]
+"rollercoster.wrl"
+
+EXTERNPROTO	cudlik [
+	eventIn	SFBool set_aktivovane
+	eventOut SFBool aktivovane_changed
+	eventOut SFTime	aktivovaneTime_changed
+]
+"mainPower.wrl#cudlik"
+
+EXTERNPROTO	box [
+]
+"mainPower.wrl#box"
+
+EXTERNPROTO	semaforProto [
+	eventIn	SFBool set_activeFromZach
+	eventIn	SFBool set_activeFromPos
+	eventOut SFBool	zelena_changed
+]
+"semafor.wrl#semaforProto"
+
+PROTO RollerCoster [
+	eventIn	SFBool set_active
+	field SFInt32 lod 1
+	field MFString texturaVlaku ["textury/iron.jpg","horska_draha/textury/iron.jpg"]
+	field SFColor farbaVlaku .494 .231 .125
+	field MFString texturaTramu ["textury/palisandr_indicky.jpg","horska_draha/textury/palisandr_indicky.jpg"]
+	field SFColor farbaTramuRollerky 0.453 0.367 0.312
+	field SFColor farbaSvetlaNadVlakom 1 1 1
+]{
+	Switch {
+		whichChoice	IS lod
+		choice [
+			DEF	scenaPerfektna Group	{
+				children [
+					#kolajnice--------------------------------------------
+					rollercoster {
+						texturaTramuRollerky IS	texturaTramu
+						farbaTramuRollerky IS farbaTramuRollerky
+						loLodRoller	IS lod
+					}
+					#=====================================================
+					#hlavny vypinac---------------------------------------
+					Transform {
+						translation	-5 0.85 15
+						scale 0.15 0.15 0.15
+						children[
+							DEF mainSwitch cudlik {
+								set_aktivovane IS set_active
+							}
+							box	{
+							}
+						]
+					}
+					#=====================================================
+					#semafor----------------------------------------------
+					Transform {
+						translation	5 1.9 2
+						scale 0.5 0.5 0.2
+						rotation 0 1 0 -0.785
+						children
+						DEF  semafor semaforProto {
+						}
+					}
+					#=====================================================
+					#trava------------------------------------------------
+					Group {
+						children
+						Inline {
+							url ["horska_draha/trava.wrl","trava.wrl"]
+						}
+					}
+					#=====================================================
+					#vlaky------------------------------------------------
+					Group {
+						children [
+							Group {
+								children [
+									DEF vlacik2 Transform {
+										translation	1.3 0 0
+										children[
+											DEF vlacik Transform {
+												translation	0 0.425 0
+												scale 1.2 1 0.91
+												children
+												vlacik {
+													texturaVlacika IS texturaVlaku
+													farbaVlacika IS farbaVlaku
+													loLod IS lod
+												}
+											}
+											DEF vlacik2View Viewpoint {
+												jump FALSE
+												position 0 1.2 0
+												orientation	0 1 0 -1.57
+											}
+										]
+									}
+									DEF	vlacik2TuchSen TouchSensor {
+										enabled	FALSE
+									}
+								]
+							}
+							Group {
+								children[
+									DEF vlacik3 Transform {
+										translation	-1 0 0
+										children[
+											USE	vlacik
+											DEF vlacik3View Viewpoint {
+												jump FALSE
+												position 0 1.2 0
+												orientation	0 1 0 -1.57
+											}
+										]
+									}
+									DEF	vlacik3TuchSen TouchSensor {
+										enabled	FALSE
+									}
+								]
+							}
+							Group {
+								children [
+									DEF vlacik1 Transform {
+										translation	3.6 0 0
+										children[
+											USE	vlacik
+											DEF vlacik1View Viewpoint {
+												jump FALSE
+												position 0 1.2 0
+												orientation	0 1 0 -1.57
+											}
+										]
+									}
+									DEF	vlacik1TuchSen	TouchSensor	{
+										enabled	FALSE
+									}
+								]
+							}
+							DEF	hlavnyPohybovyTS TimeSensor	{
+								startTime -1
+								loop TRUE
+								cycleInterval 10
+							}
+							DEF	hlavnyPohybovyPI PositionInterpolator {
+								key	[0, 0.4, 0.8, 1]
+								keyValue [3.6 0 0,3.6 0 10,-1 0 10,-1 0 0]
+							}
+							DEF	posun2to1TS TimeSensor {
+								loop FALSE
+								cycleInterval 5
+							}
+							DEF	posun2to1PI	PositionInterpolator {
+								key	[0, 1]
+								keyValue [1.3 0 0,3.6 0 0]
+							}
+							DEF	posun3to2TS TimeSensor {
+								loop FALSE
+								cycleInterval 5
+							}
+							DEF	posun3to2PI	PositionInterpolator {
+								key	[0, 1]
+								keyValue [-1 0 0,1.3 0 0]
+							}
+							Transform {
+								translation	3 1 2
+								children[
+									DEF	trainProxySenzor ProximitySensor {
+										enabled	TRUE
+										center 0 0 0
+										size 6 2 6
+									}
+#									Shape {
+#										geometry Box {
+#											size 6 2 6
+#										}
+#										appearance Appearance {
+#											material Material {
+#												diffuseColor 1 .85 0
+#												specularColor .87 .25 .25
+#												ambientIntensity .157
+#												shininess 1
+#											}
+#										}
+#									}
+								]
+							}
+							DEF	VonZVlaku Viewpoint	{
+								position 3.6 1.6 5
+							}
+							DEF naviIn NavigationInfo	{
+								type ["FLY"]
+								speed 0
+							}
+							DEF naviOut NavigationInfo	{
+								type ["WALK", "ANY"]
+							}
+							DEF	obsluhaNastupovania Script {
+								field SFNode naviIn USE	naviIn
+								field SFNode naviOut USE naviOut
+								field SFNode VonZVlaku USE VonZVlaku
+								field SFNode view1 USE vlacik1View
+								field SFNode view2 USE vlacik2View
+								field SFNode view3 USE vlacik3View
+								field SFBool voVlaku FALSE
+								eventIn	SFBool set_touch1
+								eventIn	SFBool set_touch2
+								eventIn	SFBool set_touch3
+								directOutput TRUE
+								url	"javascript:
+								function set_touch1(aktiv){
+									if(aktiv){
+										if(!voVlaku){
+											voVlaku = true;
+											view1.set_bind = true;
+											naviIn.set_bind = true;
+										}
+										else{
+											voVlaku = false;
+											VonZVlaku.set_bind = true;
+											naviOut.set_bind = true;
+										}
+									}
+								}
+								function set_touch2(aktiv){
+									if(aktiv){
+										if(!voVlaku){
+											voVlaku = true;
+											view2.set_bind = true;
+											naviIn.set_bind = true;
+										}
+										else{
+											voVlaku = false;
+											VonZVlaku.set_bind = true;
+											naviOut.set_bind = true;
+										}
+									}
+								}
+								function set_touch3(aktiv){
+									if(aktiv){
+										if(!voVlaku){
+											voVlaku = true;
+											view3.set_bind = true;
+											naviIn.set_bind = true;
+										}
+										else{
+											voVlaku = false;
+											VonZVlaku.set_bind = true;
+											naviOut.set_bind = true;
+										}
+									}
+								}
+								"
+							}
+							DEF	obsluhaTouchSignalu Script {
+								field SFBool positionCheck FALSE
+								field SFBool proxyCheck FALSE
+								eventIn SFBool set_positionCheck
+								eventIn	SFBool set_proxyCheck
+								eventOut SFBool	circum_changed
+								url	"javascript:
+								function set_positionCheck(check){
+									positionCheck = check;
+									print(\"funkcia_positionCheck: \",check);
+									if(positionCheck && proxyCheck)
+										circum_changed = true;
+									else
+										circum_changed = false;
+								}
+								function set_proxyCheck(check){
+									proxyCheck = check;
+									print(\"funkcia_proxyCheck: \",check);
+									if(positionCheck && proxyCheck)
+										circum_changed = true;
+									else
+										circum_changed = false;
+								}
+								"
+							}
+							DEF	obsluhaSemaforSignalu Script {
+								field MFNode senzory [USE vlacik1TuchSen, USE vlacik2TuchSen, USE vlacik3TuchSen ]
+								field SFInt32 aktivnySenzor	0
+								field SFBool positionCheck FALSE
+								field SFBool proxyCheck FALSE
+								eventIn	SFBool set_zelena
+								eventIn	SFBool zmena
+								directOutput TRUE
+								url	"javascript:
+								function set_zelena(zelena){
+									if(zelena){
+										senzory[aktivnySenzor].enabled = true;
+										senzory[(aktivnySenzor+1)%3].enabled = true;
+									}
+									else{
+										senzory[aktivnySenzor].enabled = false;
+										senzory[(aktivnySenzor+1)%3].enabled = false;
+										senzory[(aktivnySenzor+2)%3].enabled = false;
+									}
+								}
+								function zmena(){
+									aktivnySenzor = (aktivnySenzor+1)%3;
+								}
+								"
+							}
+							DEF	prerozdelenieSignalu Script	{
+								field MFNode vlaky [USE vlacik1, USE vlacik2, USE vlacik3]
+								field SFInt32 aktivnyVlak 2
+								field SFBool pravySignal TRUE
+								eventIn	SFBool set_active
+								eventIn	SFVec3f	set_value
+								eventIn	SFTime set_newTrain
+								eventIn	SFVec3f	set_2to1
+								eventIn	SFVec3f	set_3to2
+								eventOut SFBool	zmena
+								directOutput TRUE
+								url	"javascript:
+								function set_value(value){
+									vlaky[aktivnyVlak].translation = value;
+								}
+								function set_newTrain(){
+									if(pravySignal){
+								 		aktivnyVlak = (aktivnyVlak+1)%3;
+										zmena = true;
+									}
+									else
+										pravySignal = true;
+								}
+								function set_2to1(value){
+									vlaky[(aktivnyVlak+1)%3].translation = value;
+								}
+								function set_3to2(value){
+									vlaky[(aktivnyVlak+2)%3].translation = value;
+								}
+								function set_active(active){
+									if(!active)
+										pravySignal = false;
+								}
+								"
+							}
+							DEF	zachovanieHlavnehoCasu Script {
+								field SFTime pociatok 0
+								field SFBool prvy TRUE
+								field SFTime stopped 0
+								eventIn	SFBool set_startStop
+								eventOut SFTime	start_changed
+								eventOut SFTime	stop_changed
+								url "javascript:
+								function set_startStop(value,time){
+									if(value){
+										if(prvy){
+											pociatok = time;
+											prvy = false;
+											start_changed = pociatok;
+										}
+										else{
+											pociatok = time - (stopped - pociatok);
+											start_changed = pociatok;
+											stop_changed = -1;
+										}
+									}
+									else{
+										stopped = time;
+										stop_changed = stopped;
+									}
+								}
+								"
+							}
+							DEF	zachCasPos Script {
+								field SFTime pociatok 0
+								field SFTime stopped 0
+								field SFBool pravySignal FALSE
+								eventIn	SFBool set_active
+								eventOut SFTime	startTime_changed
+								eventOut SFTime	stopTime_changed
+								eventOut SFBool	active_changed
+								eventIn	SFTime set_cycleTime
+								url	"javascript:
+								function set_active(active,time){ 
+									if(active){
+										if(pociatok == 0){
+											pociatok = time;
+											startTime_changed = pociatok;
+										}
+										else{
+											pociatok = time - (stopped - pociatok);
+											stopTime_changed = -1;
+											startTime_changed = pociatok;
+										}
+										active_changed = true;
+									}
+									else{
+										stopped = time;
+										pravySignal = false;
+										active_changed = false;
+										stopTime_changed = stopped;
+									}
+								}
+								function set_cycleTime(time){
+									if(pravySignal){
+										pociatok = time;
+										startTime_changed = pociatok;
+									}
+									pravySignal = true;
+								}
+								"
+							}
+						]
+
+						#============================ovladanie hlavnej trasy============================
+						ROUTE zachovanieHlavnehoCasu.start_changed TO hlavnyPohybovyTS.startTime
+						ROUTE zachovanieHlavnehoCasu.stop_changed TO hlavnyPohybovyTS.stopTime
+						ROUTE hlavnyPohybovyTS.fraction_changed	TO hlavnyPohybovyPI.set_fraction
+						ROUTE hlavnyPohybovyPI.value_changed TO	prerozdelenieSignalu.set_value
+						#===============================================================================
+
+						#================================riadenie vyberu vlakov=========================
+						ROUTE hlavnyPohybovyTS.cycleTime TO	prerozdelenieSignalu.set_newTrain
+						ROUTE hlavnyPohybovyTS.isActive	TO prerozdelenieSignalu.set_active
+						#===============================================================================
+
+						#=========================ovladanie posunu z 2. na 1. poziciu===================
+						ROUTE hlavnyPohybovyTS.isActive	TO	zachCasPos.set_active
+						ROUTE hlavnyPohybovyTS.cycleTime TO	zachCasPos.set_cycleTime
+						ROUTE zachCasPos.startTime_changed TO posun2to1TS.startTime
+						ROUTE posun2to1TS.fraction_changed TO posun2to1PI.set_fraction
+						ROUTE posun2to1PI.value_changed	TO prerozdelenieSignalu.set_2to1
+						ROUTE zachCasPos.stopTime_changed TO posun2to1TS.stopTime
+						#===============================================================================
+
+						#=========================obladanie posunu z 3. na 2. poziciu===================
+						ROUTE zachCasPos.startTime_changed TO posun3to2TS.startTime
+						ROUTE posun3to2TS.fraction_changed TO posun3to2PI.set_fraction
+						ROUTE posun3to2PI.value_changed	TO prerozdelenieSignalu.set_3to2
+						ROUTE zachCasPos.stopTime_changed TO posun3to2TS.stopTime
+						#===============================================================================
+
+						#==================================prepojenie na semafor========================
+						ROUTE zachCasPos.active_changed	TO semafor.set_activeFromZach
+						ROUTE posun2to1TS.isActive TO semafor.set_activeFromPos
+						ROUTE semafor.zelena_changed TO	obsluhaTouchSignalu.set_positionCheck
+						ROUTE trainProxySenzor.isActive	TO obsluhaTouchSignalu.set_proxyCheck
+						ROUTE obsluhaTouchSignalu.circum_changed TO	obsluhaSemaforSignalu.set_zelena
+						ROUTE prerozdelenieSignalu.zmena TO	obsluhaSemaforSignalu.zmena
+						#===============================================================================
+
+						#==================================usadenie avatara do vlaku====================
+						ROUTE vlacik1TuchSen.isActive TO obsluhaNastupovania.set_touch1
+						ROUTE vlacik2TuchSen.isActive TO obsluhaNastupovania.set_touch2
+						ROUTE vlacik3TuchSen.isActive TO obsluhaNastupovania.set_touch3
+						#===============================================================================
+					}
+					#=====================================================
+				]
+				ROUTE mainSwitch.aktivovane_changed	TO zachovanieHlavnehoCasu.set_startStop
+			}
+			LOD	{
+				range [1000]
+				level [
+					Transform {
+						children
+						 USE scenaPerfektna
+					}
+					Group {
+
+					}
+				]
+			}
+		]
+	}
+}
+RollerCoster {
+}

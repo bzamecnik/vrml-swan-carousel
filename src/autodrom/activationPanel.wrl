@@ -1,0 +1,166 @@
+#VRML V2.0 utf8
+
+PROTO button [
+	eventIn	SFBool set_activated
+	eventOut SFBool activated_changed
+	eventOut SFTime	activatedTime_changed
+]{
+	Group {
+		children [
+			DEF button Transform {
+				scale 1 1 1
+				translation	0 0 0.5
+				#rotation 0 0 1 0.785
+				rotation 1 0 0 1.57
+				children
+				Shape {
+					geometry Cylinder {
+						#size 1 1 0.5
+						height 0.5
+						radius 0.7
+					}
+					appearance Appearance {
+						material Material {
+							diffuseColor 0 0 .59
+							specularColor 0 0 .5
+							emissiveColor 0 0 .15
+							ambientIntensity 0
+							shininess .15
+						}
+						
+			
+					}
+				}
+			}
+			DEF buttonPI PositionInterpolator	{
+				key	[0,1]
+				keyValue [0 0 0.5,0 0 0.01]
+			}
+			DEF	buttonTS TouchSensor {
+			}
+			DEF	buttonTimeSensor TimeSensor	{
+				loop FALSE
+				cycleInterval 0.5
+			}
+
+			DEF loopTimer TimeSensor {
+				cycleInterval 1
+				loop TRUE
+			}
+
+			DEF radiusInterpolator PositionInterpolator {
+				key	[0 0.5 1]
+				keyValue [1 1 1, 1.5 1 1.5, 1 1 1]
+			}
+		]
+	}
+	DEF	activation Script	{
+		field SFBool state FALSE
+		eventIn	SFBool set_activated IS set_activated
+		eventOut SFBool	activated_changed IS activated_changed
+		eventOut SFTime activatedTime_changed IS activatedTime_changed
+		eventIn	SFFloat	set_fraction
+		eventOut SFFloat fraction_changed
+		url "javascript:
+		function set_activated(value,time){
+			if(value){
+				state = state ? FALSE : TRUE;
+				activated_changed = state;
+				activatedTime_changed = time;
+			}
+		}
+		function set_fraction(value){
+			if(state)
+			fraction_changed = value
+			else
+			fraction_changed = 1-value
+		}
+		"
+	}
+	ROUTE buttonTS.isActive TO activation.set_activated
+	ROUTE buttonTS.touchTime TO buttonTimeSensor.startTime
+	ROUTE buttonTimeSensor.fraction_changed	TO activation.set_fraction
+	ROUTE activation.fraction_changed	TO buttonPI.set_fraction
+	ROUTE buttonPI.value_changed TO button.translation
+	ROUTE loopTimer.fraction_changed TO radiusInterpolator.set_fraction
+	ROUTE radiusInterpolator.value_changed TO button.set_scale
+}
+
+
+
+PROTO box
+[
+]{
+	Group {
+		children [
+			Transform {
+				children[
+					Transform {
+						translation	0 -4 0
+						children
+						Shape {
+							geometry Box {
+								size 0.75 4 0.5
+							}
+							appearance Appearance {
+								material DEF DarkYellow Material{
+									diffuseColor .6 .35 0
+									specularColor .5 .3 0
+									emissiveColor .3 .18 0
+									ambientIntensity 0
+									shininess .15
+								}
+								
+							}
+						}
+					}
+#					Transform {
+#						scale 2 2 0.5
+#						children
+#						Shape {
+#							geometry Box {
+#								size 2 2 0.5
+#							}
+#							appearance Appearance {
+#								material Material {
+#									diffuseColor .54 0 0
+#									specularColor .59 0 .13
+#									ambientIntensity .0467
+#									shininess .06
+#									emissiveColor 1 0 0
+#								}
+#							}
+#						}
+#					}
+					DEF krabicka Transform {
+						scale 2 2 1
+						rotation 0 0 1 0.78
+						children
+						Shape {
+							geometry Box {
+								size 2 2 0.5
+							}
+							appearance Appearance {
+#								material DEF farbaKrabicky Material {
+#									diffuseColor 1 1 1
+#									specularColor .59 0 .13
+#									ambientIntensity .0467
+#									shininess .06
+#								}
+								material USE DarkYellow
+							}
+						}
+					}
+					
+				]
+			}
+		]
+	}
+}
+
+DEF	MainSwitch box {
+
+}
+DEF	MainButton button{
+
+}

@@ -1,0 +1,32 @@
+#VRML V2.0 utf8
+
+
+DEF NightBackground Background {
+	# Zapad slunce - imitace Rayleighova scatteringu
+	skyColor [
+		0.027, 0.215, 0.592,
+		0.286 0.458 0.815, 
+		0.717 0.835 0.882,
+		0.878, 0.745, 0.482,
+		0.933594 0.457031 0.089844,
+		0.717, 0.184, 0.082,
+		0 0.1 0.1
+	]
+	skyAngle [1.1 1.3 1.4 1.45 1.5 1.6]
+
+	# Vecerni trava
+	groundColor [
+		0.129, 0.631, 0.321
+		0.129, 0.631, 0.321
+		0.156, 0.360, 0.254
+	]
+	groundAngle	[1.25 1.57]
+}
+
+DEF DayBackground Background {
+	# credits: prof. Jiri Zara: Laskavy Pruvodce Virtualnimy Svety (kap2/o-2-1.wrl)
+	skyColor [0.2 0.3 1, 0.2 0.3 1, 1 1 1]
+	skyAngle [1.5, 1.57]
+	groundAngle 1.57
+	groundColor [0 0 0, 0.5 0.4 0.1]
+}

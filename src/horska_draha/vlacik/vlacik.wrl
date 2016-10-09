@@ -1,0 +1,123 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	koliesko [
+	field MFString texturaKolieska
+	field SFColor farbaKolieska
+	exposedField SFInt32 loLodKolieska
+]
+"vlacikKoliesko.wrl"
+
+EXTERNPROTO	chasy [
+	field MFString texturaChasy
+]
+"vlacikChasy.wrl"
+
+EXTERNPROTO	chasyDec20 [
+	field SFColor farba
+]
+"vlacikChasyDec20.wrl"
+
+EXTERNPROTO	chasyDec50 [
+	field SFColor farbaChasy
+]
+"vlacikChasyDec50.wrl"
+
+PROTO vlacikKomlpet [
+	field MFString texturaVlacika "../textury/iron.jpg"
+	field SFColor farbaVlacika .494 .231 .125
+	exposedField SFInt32 loLod 0
+]{
+	DEF	vlacikKomplet Group	{
+		children[
+			Switch {
+				whichChoice	IS loLod
+				choice [
+					DEF vlacikKvalitny Transform {
+						scale 0.5 0.5 0.5
+						children
+						chasy {
+							texturaChasy IS texturaVlacika
+						}
+					}
+					LOD	{
+						center 1 0 0
+						range [20,30,100]
+						level [
+							USE	vlacikKvalitny
+							Transform {
+								scale 0.5 0.5 0.5
+								children
+								chasyDec50 {
+									farbaChasy IS farbaVlacika
+								}
+							}
+							Transform {
+								scale 0.5 0.5 0.5
+								children
+								chasyDec20 {
+									farba IS farbaVlacika
+								}
+							}
+							Group {
+
+							}
+						]
+					}
+				]
+			}
+			DEF naprava Transform {
+				translation	-0.5 -0.225 0.5
+				children [
+					DEF vlacikKoliesko Transform {
+						scale 0.75 0.75 0.75
+						rotation 1 0  0	1.57
+						children
+						koliesko {
+							farbaKolieska IS farbaVlacika
+							texturaKolieska	IS texturaVlacika
+							loLodKolieska IS loLod
+						}
+					}
+					Transform {
+						translation	0 0 -1
+						rotation 0 1 0 3.14
+						children
+						USE	vlacikKoliesko
+					}
+				]
+			}
+			Transform {
+				translation	1 0 0
+				children
+				USE	naprava
+			}
+		]
+	}
+}
+
+Group {
+	children[
+		vlacikKomlpet {
+
+		}
+		Shape {
+			geometry Box {
+				size 0.01 2 0.01
+			}
+			appearance Appearance {
+				material Material {
+					diffuseColor .79 .25 0
+					specularColor .63 .19 .03
+					ambientIntensity .0867
+					shininess .55
+				}
+
+			}
+		}
+	]
+}

@@ -1,0 +1,264 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 23.11.2009"]
+	title "Labuti kolotoc - ovladaci panel"
+}
+
+Viewpoint {
+	position 0 0.2 1
+	description	"z dalky"
+}
+
+Viewpoint {
+	position 0.1 0.05 0
+	description	"z blizka, ze strany"
+	orientation	0 1 0 1.57
+}
+
+PROTO Paka [
+	field SFNode materialPaky NULL
+	eventOut SFFloat hodnota_changed
+	field SFFloat minAngle -1
+	field SFFloat maxAngle 1
+	eventIn SFFloat set_initHodnotaPaky
+	eventIn	SFBool set_povolena
+]
+{
+	Transform {
+		rotation 0 0 1 -1.57
+		children
+		DEF PakaRotation Transform {				
+			children [
+				DEF SenzorPaky CylinderSensor {
+					minAngle IS	minAngle
+					maxAngle IS maxAngle
+				}
+				Transform {				
+					rotation 0 0 1 1.57
+					children [
+						Transform {
+							translation	0 0.075 0
+							children [
+								Shape {
+									geometry Cylinder {
+										radius 0.005
+										height 0.15
+										top	FALSE
+										bottom FALSE
+									}
+									appearance Appearance {
+										material IS	materialPaky
+									}
+								}
+								Transform {
+									translation	0 0.075 0
+									children
+									Shape {
+										geometry Sphere {
+											radius 0.015
+										}
+										appearance Appearance {
+											material IS	materialPaky
+										}
+									}
+								}
+								Transform {
+									rotation 0 0 1 1.57
+									translation	0 -0.075 0
+									children [
+										Shape {
+											geometry Cylinder {
+												radius 0.01
+												height 0.02
+											}
+											appearance Appearance {
+												material IS	materialPaky
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	}
+	DEF Rizeni Script {
+		eventIn	SFRotation set_angle
+		eventIn SFFloat set_initHodnotaPaky IS set_initHodnotaPaky
+		eventOut SFFloat hodnota_changed IS hodnota_changed
+		eventIn	SFBool set_povolena	IS set_povolena
+		eventOut SFBool povolena_changed
+		field SFFloat minAngle IS minAngle
+		field SFFloat maxAngle IS maxAngle
+		field SFNode PakaRotation USE PakaRotation
+		#		field SFFloat jmenovatel 0
+		#		field SFFloat odecitanec 0
+
+		directOutput TRUE
+		url "javascript:
+		//		function initialize() {
+		//          // mozna mala optimalizace:
+		//			jmenovatel = 1 / Math.abs(maxAngle - minAngle);
+		//			odecitanec = minAngle * jmenovatel;
+		//		}
+		function set_angle(angle) {
+			//			hodnota_changed = angle.angle * jmenovatel - odecitanec;
+			hodnota_changed = ((angle.angle - minAngle) / Math.abs(maxAngle - minAngle));
+		}
+		function set_initHodnotaPaky(value) {
+			PakaRotation.rotation = new SFRotation(0, 1, 0,
+				value * Math.abs(maxAngle - minAngle) + minAngle);
+		}
+		function set_povolena(value) {povolena_changed = value;}
+		"
+	}
+
+	ROUTE SenzorPaky.rotation_changed TO PakaRotation.rotation
+	ROUTE SenzorPaky.rotation_changed TO Rizeni.set_angle
+	ROUTE Rizeni.povolena_changed TO SenzorPaky.enabled
+}
+
+EXTERNPROTO Tlacitko [
+	field SFBool zapnuto
+	field SFBool blikaci
+	eventOut SFBool zapnuto_changed
+	eventOut SFBool vypnuto_changed
+	eventOut SFTime touchTime
+	eventIn	SFBool set_povoleno
+	eventIn	SFBool set_zapnuto
+	field SFNode barvaZapnuto
+	field SFNode barvaVypnuto
+] "../lib/tlacitko.wrl#Tlacitko"
+
+PROTO OvladaciPanelLabute [
+	field SFNode povrchPanelu NULL
+	eventOut SFFloat hodnotaPaky_changed
+	eventOut SFBool tlacitkoZapnuto_changed
+	eventOut SFTime tlacitkoTouchTime_changed
+	eventIn SFFloat set_initHodnotaPaky
+	eventIn SFBool set_panelPovolen
+] {
+	Group	{
+		children [
+			DEF Panel Shape {
+				geometry Box {
+					size 0.4 0.02 0.1
+				}
+				appearance DEF Povrch Appearance {
+					material IS	povrchPanelu
+				}
+			}
+			Transform {
+				translation	-0.075 0.01 0
+				children
+				DEF PakaNaUhelRamene Paka {
+					materialPaky IS	povrchPanelu
+				}
+			}
+			Transform {
+				translation	0.075 0.01 0
+				children
+				DEF	Tlacitko Tlacitko {}
+			}
+		]
+	}
+	DEF	Rizeni Script {
+		eventIn	SFFloat set_hodnotaPaky
+		eventOut SFFloat hodnotaPaky_changed IS hodnotaPaky_changed
+		eventIn	SFTime set_tlacitkoTouchTime
+		eventOut SFTime tlacitkoTouchTime_changed IS tlacitkoTouchTime_changed
+		eventIn	SFBool set_tlacitkoZapnuto
+		eventOut SFBool tlacitkoZapnuto_changed IS tlacitkoZapnuto_changed
+		eventIn SFFloat set_initHodnotaPaky IS set_initHodnotaPaky
+		eventOut SFFloat initHodnotaPaky_changed
+		eventIn SFBool set_panelPovolen IS set_panelPovolen
+		eventOut SFBool panelPovolen_changed
+		directOutput TRUE
+		url "javascript:
+		function set_hodnotaPaky(value) { hodnotaPaky_changed = value; }
+		function set_tlacitkoTouchTime(value) { tlacitkoTouchTime_changed = value; }
+		function set_tlacitkoZapnuto(value) { tlacitkoZapnuto_changed = value; }
+		function set_initHodnotaPaky(value) { initHodnotaPaky_changed = value; }
+		function set_panelPovolen(value) { panelPovolen_changed = value; }
+		"
+	}
+	ROUTE PakaNaUhelRamene.hodnota_changed TO	Rizeni.set_hodnotaPaky
+	ROUTE Tlacitko.touchTime TO	Rizeni.set_tlacitkoTouchTime
+	ROUTE Tlacitko.zapnuto_changed TO Rizeni.set_tlacitkoZapnuto
+	ROUTE Rizeni.initHodnotaPaky_changed TO PakaNaUhelRamene.set_initHodnotaPaky
+	ROUTE Rizeni.panelPovolen_changed TO PakaNaUhelRamene.set_povolena
+	ROUTE Rizeni.panelPovolen_changed TO Tlacitko.set_povoleno
+}
+
+PROTO OvladaciPanelKolotoce [
+	field SFNode vzhledPanelu NULL
+	eventOut SFTime tlacitkoPohotovostniTouchTime_changed
+	eventIn SFBool jePauza
+	eventOut SFBool jePauza_changed
+	eventIn SFBool pauzaPovolena
+] {
+	Group	{
+		children [
+			DEF Ramecek Shape {
+				geometry Box {
+					size 0.25 0.02 0.25
+				}
+				appearance IS vzhledPanelu
+			}
+			DEF Panel Shape {
+				geometry Box {
+					size 0.2 0.021 0.2
+				}
+				appearance Appearance {
+					material Material {
+						diffuseColor 0 0 0
+						specularColor .5 .5 .5
+						emissiveColor .15 .15 .15
+						ambientIntensity 0
+					}
+				
+				}
+			}
+			Transform {
+				translation	-0.05 0.011 0
+				children DEF TlacitkoPohotovostni Tlacitko {}
+			}
+			Transform {
+				translation	0.05 0.011 0
+				children DEF TlacitkoPauza Tlacitko {blikaci TRUE}
+			}
+		]
+	}
+	DEF	Rizeni Script {
+		eventIn	SFTime set_tlacitkoPohotovostniTouchTime
+		eventOut SFTime tlacitkoPohotovostniTouchTime_changed IS tlacitkoPohotovostniTouchTime_changed
+		eventIn	SFBool jePauza IS	jePauza
+		eventOut SFBool jePauza_changed IS jePauza_changed
+		eventIn SFBool pauzaPovolena IS	pauzaPovolena
+		eventOut SFBool pauzaPovolena_changed
+		directOutput TRUE
+		url "javascript:
+		function set_tlacitkoPohotovostniTouchTime(value) {
+			tlacitkoPohotovostniTouchTime_changed = value;
+		}
+		function jePauza(value) {
+			pauza = value;
+			jePauza_changed = value;
+		}
+		function pauzaPovolena(value) {
+			pauzaPovolena_changed = value;
+		}
+		"
+	}
+	ROUTE TlacitkoPohotovostni.touchTime TO	Rizeni.set_tlacitkoPohotovostniTouchTime
+	ROUTE Rizeni.jePauza_changed TO TlacitkoPauza.set_zapnuto
+	ROUTE TlacitkoPauza.zapnuto_changed TO Rizeni.jePauza
+	ROUTE TlacitkoPauza.vypnuto_changed TO TlacitkoPohotovostni.set_povoleno
+	ROUTE Rizeni.pauzaPovolena_changed TO TlacitkoPauza.set_povoleno
+}
+
+#OvladaciPanelLabute {}
+OvladaciPanelKolotoce {}

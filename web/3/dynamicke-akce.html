@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta name="http-equiv" content="content-type: text/html; charset=cp1250">
+    <title>Virtuální realita - úlohy</title>
+    <style>
+      body {
+				margin: 0 10%;
+				padding: 1em 2em;
+				background-color: #EEA;
+				border: 10px solid #E90;
+				border-top-width: 2em;
+				border-bottom-width: 2em;
+				font-family: sans-serif; 
+			}
+			a {
+				color: #C60;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			table,th,td {
+				border: 1px #000 solid
+			}
+    </style>
+  </head>
+  <body>
+    <p>Virtuální realita - úloha č. 3 - Dynamický svět</p>
+    <h1>Dynamické akce - schémata</h1>
+    
+    <h2>Autodrom</h2>
+	<p>Každé auto má svuj TouchSensor, TimeSensor a OrientationInterpolator.</p>
+	<p>Cesta je následující:
+	<ul>
+		<li> TouchSensor.touchTime -> TimeSensor.startTime </li>
+		<li> TimeSensor.fraction_changed -> OrientationInterpolator.set_fraction </li>
+		<li> OrientationInterpolator.value_changed -> BumperCar.rotation </li>
+	</ul>
+	</p>
+	<p> Navíc, všechna auta sdílí AudioClip uzel, který je aktivovaný pres TouchSensor.touchTime. </p>
+	<p> Dál, lze otáčet pilíře (všechny najednou) pomoci CylinderSensoru. </p>
+    
+    <h2>Horská dráha</h2>
+<p>
+Prvy vozen v rade reaguje Touch senzorom na aktivaciu, nasledkom coho sa spusti animacia ovladana TimeSenzorom zobrazujuca cestu vozika po horskej drahe. V tom istom momente a na zaklade tej istej odoslanej udalosti sa spusti aj zvukovy zaznam uhanajuceho vlaku. Atrakcia obsahuje aj Proximity senzor spinajuci 5 svetiel rozmiestnenych nad celym modelom, a majucich vlastnost menit farbu zo zahlavia prototypu.
+</p>
+<pre>
+	1.ROUTE DotykVozna1.touchTime	TO CasovacVozna1.startTime
+	2.ROUTE CasovacVozna1.fraction_changed TO	PIVozna1_1.set_fraction
+	3.ROUTE CasovacVozna1.fraction_changed TO	PIVozna1_2.set_fraction
+	4.ROUTE CasovacVozna1.fraction_changed TO	OIVozna1.set_fraction
+	5.ROUTE PIVozna1_1.value_changed TO	Vozen1Rota.translation
+	6.ROUTE PIVozna1_2.value_changed TO Vozen1.translation
+	7.ROUTE OIVozna1.value_changed TO	Vozen1Rota.rotation
+	8.ROUTE CasovacVozna1.fraction_changed TO	OIVozna1_2.set_fraction
+	9.ROUTE OIVozna1_2.value_changed TO Vozen314.rotation
+	10.ROUTE MightyHand.translation_changed TO otocenyVlacik.translation
+	11.ROUTE DotykVozna1.touchTime	TO ZvukVlaku.startTime
+	22.ROUTE DotykVozna1.touchTime	TO CasovacZvuku.startTime
+	13.ROUTE CasovacZvuku.cycleTime TO	skript.dobaVlacika
+	14.ROUTE skript.vybuch	TO CasovacZvuku2.startTime
+	15.ROUTE CasovacZvuku2.startTime TO ZvukVybuchu.startTime
+	16.ROUTE CasovacZvuku2.startTime TO ZvukVlaku.stopTime
+	17.ROUTE ProxySenz.isActive TO	VlakoveSvetlo.on
+</pre>
+<p>
+Ukazka routovacich ciest v programe. Prvou cestou je put informacie o dotyku vozika, starteru casovaca. V nasledujucich troch ROUTOCH sa nachadzaju tri koridori na posielanie impulzov trom roznym urovniam transformu prveho vozika. Tri urovne som bol nuteny vytvorit vzhladom na dynamicky meniace sa poziadavky na polohu osi otacania vozika v priebehu jeho cesty drahou.
+nasledujuce ROUTY, tieto impulzy prevadzaju na jednotlive body na trati, a posielaju ich detaily jednotlivym transformom. ROUTY 8 a 9 sa staraju o spravne natocenie vozika v pripade otocenia sa do protismeru.
+9.ROUT je MightyHand manipulator, jeho nazov plynie z toho ze je mozne aktivaciou manipulatora pohybovat celym vozikom po vodorovnej ploche. Jedna sa o vozik umiestneny mimo kolaji. ROUT 11 sa stara o spustenie opakujucej
+sa slucky zvukoveho zaznamu iduceho vlaku. Taktiez sa spusti casovac zvuku, ktory je pomocnym casovacom a neskor nam umozni odpalit velkolepe zvukove finale animacie. Aby sme dosiahli presnu aktivaciu zvukoveho zaznamu s ohladom
+na pozadovany cas, pozujijeme skript "skript". Skript "skript" umozni casovacuZvuku2 spustit zvukovy zaznam vybuchu. V tom istom case sa ukonci cinnost zvukovej slucky iduceho vlaku. Posledny ROUT sa tyka proximity senzora,
+a jeho aktivacie svetla nad atrakciou.
+</p>
+    
+    <h2>Labuťový kolotoč</h2>
+    
+    <h3>Popis funkcionality a ovladani</h3>
+<p>
+Kolotoc ma tri rezimy: v klidovem rezimu se nehybe, v automatickem rezimu se otaci a ramena se zvedaji automaticky, v manualnim rezimu se aktivni labut ovlada rucne pakou, zbyle se hybou samy.
+</p>
+
+<p>
+Tlacitkem na sloupku u kolotoce se kolotoc prepina mezi klidovym a automatickym rezimem.
+</p>
+
+<p>
+Kliknutim na labut do ni nasedneme, opetovnym kliknutim vysedneme. Behem jizdy v labuti se avatar nemuze hybat, pouze se muze otacet. Labut, ve ktere avatar sedi, budeme oznacovat jako aktivni.
+</p>
+
+<p>
+V labuti je k dispozici ovladaci panel s tlacitkem a pakou. Pomoci tlacitka prepiname mezi klidovym rezimem a manualnim rezimem kolotoce (tj. zapneme otaceni). Pomoci paky nastavujeme aktualni uhel zvednuti celeho ramene.
+</p>
+
+<p>
+Pri prechodu do klidoveho stavu labute automaticky sjednou dolu, aby bylo mozne nastupovat resp. vystupovat.
+</p>
+
+<p>
+Pri otaceni rotoru kolotoce se zaroven animuje barva kuzele rotoru.
+</p>
+
+<p>
+V blizkosti kolotoce se zapne svetlo umistene nad stredem rotoru. 
+</p>
+
+
+
+<h3>Implementacni poznamky</h3>
+
+
+<p>
+Ramena se generuji na zacatku dynamicky pomoci skriptu.
+</p>
+
+<p>
+Nektere - ROUTEs se vytvareji resp. rusi dynamicky.
+</p>
+
+
+
+<h3>Prehled dynamickych akci</h3>
+
+
+
+
+<h4>Labutovy_kolotoc</h4>
+
+<ul>
+<li> interni uzly:
+<ul>
+<li> Kototoc_proximity - proximity senzor v tele kolotoce
+</li>
+<li> OvladaciPanelKolotoce - ovladaci panel kolotoce s jednim tlacitkem
+</li>
+
+<li> Tlacitko_klik - audio klip
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Kototoc_proximity.isActive TO  Svetlo_1.on
+ROUTE OvladaciPanelKolotoce.tlacitkoTouchTime_changed TO Rotor.prepnuti
+ROUTE OvladaciPanelKolotoce.tlacitkoTouchTime_changed TO Tlacitko_klik.startTime</pre>
+
+
+
+<h4>Rotor</h4>
+
+
+<pre>EXTERNPROTO  Rotor [
+  eventIn SFTime prepnuti
+  eventIn SFBool set_otaceni_vypnuto
+  eventIn SFBool set_otaceni_zapnuto
+] &quot;rotor.wrl#Rotor&quot;</pre>
+<ul>
+<li> interni uzly:
+<ul>
+<li> Rizeni_rotoru - ridici skript
+</li>
+<li> Casovac_rotoru - TimeSenzor pro otaceni rotoru
+</li>
+
+<li> Rotor_otaceni_interpolator - rotacni interpolator
+</li>
+<li> Ramena - skupina ramen
+</li>
+<li> Rotor_T - transformace pro otaceni rotoru
+</li>
+<li> Barevny_interpolator - interpolator barev pro kuzel
+</li>
+<li> Hudba_kolotoce_clip - hudba na pozadi, spoustena skriptem
+
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Rizeni_rotoru.start_changed TO Casovac_rotoru.startTime
+ROUTE Rizeni_rotoru.stop_changed TO Casovac_rotoru.stopTime
+ROUTE Casovac_rotoru.fraction_changed TO Rotor_otaceni_interpolator.set_fraction
+ROUTE Casovac_rotoru.fraction_changed TO Barevny_interpolator.set_fraction
+ROUTE Barevny_interpolator.value_changed TO  Rizeni_rotoru.set_barva_kuzele
+ROUTE Rotor_otaceni_interpolator.value_changed TO Rotor_T.rotation
+ROUTE Rizeni_rotoru.novaRamena TO Ramena.addChildren
+ROUTE Ramena.children_changed TO Rizeni_rotoru.nastavRamena</pre>
+<ul>
+<li> dynamicke zapojeni:
+<ul>
+<li> vsechna ramena:
+
+<ul>
+<li> <code>add ramena[i].aktivniRameno_changed TO Rizeni_rotoru.set_aktivniRameno</code>
+</li>
+<li> <code>add ramena[i].otaceniAktivni_changed TO Rizeni_rotoru.prepnuti</code>
+</li>
+<li> <code>add Rizeni_rotoru.prepnuti TO ramena[i].prepniAutomatickeZvedani</code>
+</li>
+</ul>
+</li>
+<li> nastaveni aktivniho ramena:
+
+<ul>
+<li> nove aktivni rameno:
+<ul>
+<li> <code>delete Rizeni_rotoru.prepnuto TO ramena[noveAktivni].prepniAutomatickeZvedani</code>
+</li>
+</ul>
+</li>
+<li> puvodni aktivni rameno:
+<ul>
+<li> <code>add Rizeni_rotoru.prepnuto TO ramena[puvodniAktivni].prepniAutomatickeZvedani</code>
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h4>Labut</h4>
+
+<pre>EXTERNPROTO  Labut [
+  eventOut SFTime touchTime
+  eventOut SFFloat hodnotaPaky_changed
+  eventOut SFBool tlacitkoZapnuto_changed
+  eventOut SFTime tlacitkoTouchTime_changed
+  eventIn SFFloat set_initHodnotaPaky
+] &quot;labut.wrl#Labut&quot;</pre>
+
+<ul>
+<li> interni uzly:
+<ul>
+<li> Aktivator - TouchSenzor pro nasedani do labute
+</li>
+<li> Rizeni - ridici skript
+</li>
+<li> OvladaciPanel - ovladaci panel labute s pakou a tlacitkem
+</li>
+
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Aktivator.touchTime TO Rizeni.set_aktivatorTouchTime
+ROUTE OvladaciPanel.hodnotaPaky_changed  TO Rizeni.set_hodnotaPaky
+ROUTE OvladaciPanel.tlacitkoZapnuto_changed TO Rizeni.set_tlacitkoZapnuto
+ROUTE OvladaciPanel.tlacitkoTouchTime_changed TO Rizeni.set_tlacitkoTouchTime
+ROUTE Rizeni.initHodnotaPaky_changed TO OvladaciPanel.set_initHodnotaPaky
+ROUTE Rizeni.aktivatorPovolen_changed TO Aktivator.enabled
+ROUTE Rizeni.panelPovolen_changed TO OvladaciPanel.set_panelPovolen</pre>
+
+
+
+<h4>Paka</h4>
+
+<pre>EXTERNPROTO Paka [
+  eventOut SFFloat hodnota_changed
+  eventIn SFFloat set_initHodnotaPaky
+  eventIn  SFBool set_povolena
+] &quot;ovladaci-panel.wrl#Paka&quot;</pre>
+
+<ul>
+<li> interni uzly:
+<ul>
+<li> SenzorPaky - manipulator paky
+</li>
+<li> PakaRotation - rotacni transformace paky
+</li>
+<li> Rizeni - ridici skript
+</li>
+
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE SenzorPaky.rotation_changed TO PakaRotation.rotation
+ROUTE SenzorPaky.rotation_changed TO Rizeni.set_angle
+ROUTE Rizeni.povolena_changed TO SenzorPaky.enabled</pre>
+
+
+
+<h4>Tlacitko</h4>
+
+<pre>EXTERNPROTO Tlacitko [
+  eventOut SFBool zapnuto_changed
+  eventOut SFTime touchTime
+  eventIn  SFBool set_povoleno
+]  &quot;ovladaci-panel.wrl#Tlacitko&quot;</pre>
+
+<ul>
+<li> interni uzly:
+<ul>
+<li> Senzor - TouchSenzor tlacitka
+</li>
+<li> Rizeni - ridici skript
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+
+</li>
+</ul>
+<pre>ROUTE Senzor.touchTime TO Rizeni.set_touchTime
+ROUTE Rizeni.povoleno_changed TO Senzor.enabled</pre>
+
+
+
+<h4>OvladaciPanelLabute</h4>
+
+<pre>EXTERNPROTO  OvladaciPanelLabute [
+  eventOut SFFloat hodnotaPaky_changed
+  eventOut SFBool tlacitkoZapnuto_changed
+  eventOut SFTime tlacitkoTouchTime_changed
+  eventIn SFFloat set_initHodnotaPaky
+  eventIn SFBool set_panelPovolen
+] &quot;ovladaci-panel.wrl#OvladaciPanelLabute&quot;</pre>
+<ul>
+<li> interni uzly:
+
+<ul>
+<li> PakaNaUhelRamene - paka pro ovladani vysky ramene
+</li>
+<li> Tlacitko - vypinac otaceni kolotoce
+</li>
+<li> Rizeni - ridici skript
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+
+</li>
+</ul>
+<pre>ROUTE PakaNaUhelRamene.hodnota_changed TO  Rizeni.set_hodnotaPaky
+ROUTE Tlacitko.touchTime TO  Rizeni.set_tlacitkoTouchTime
+ROUTE Tlacitko.zapnuto_changed TO Rizeni.set_tlacitkoZapnuto
+ROUTE Rizeni.initHodnotaPaky_changed TO PakaNaUhelRamene.set_initHodnotaPaky
+ROUTE Rizeni.panelPovolen_changed TO PakaNaUhelRamene.set_povolena
+ROUTE Rizeni.panelPovolen_changed TO Tlacitko.set_povoleno</pre>
+
+
+
+<h4>OvladaciPanelKolotoce</h4>
+
+<pre>EXTERNPROTO OvladaciPanelKolotoce [
+  eventOut SFTime tlacitkoTouchTime_changed
+] &quot;ovladaci-panel.wrl#OvladaciPanelKolotoce&quot;</pre>
+<ul>
+<li> interni uzly:
+
+<ul>
+<li> Tlacitko - prepinac automatickeho rezimu kolotoce
+</li>
+<li> Rizeni - ridici skript
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Tlacitko.touchTime TO  Rizeni.set_tlacitkoTouchTime</pre>
+
+
+
+<h4>Pist_jednoduchy</h4>
+
+<pre>EXTERNPROTO Pist_jednoduchy [
+  eventIn SFFloat set_delka_pistu
+] &quot;rameno.wrl#Pist_jednoduchy&quot;</pre>
+<ul>
+<li> interni uzly:
+<ul>
+<li> Rizeni_pistu - ridici skript
+
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Rizeni_pistu.delka_pistu_changed TO Rizeni_pistu.set_delka_pistu</pre>
+
+
+
+<h4>Rameno</h4>
+
+<pre>EXTERNPROTO  Rameno [
+  eventIn SFFloat set_uhel_zvednuti_nosniku
+  eventOut SFInt32 aktivniRameno_changed
+  eventOut SFTime otaceniAktivni_changed
+] &quot;rameno.wrl#Rameno&quot;</pre>
+
+<ul>
+<li> interni uzly:
+<ul>
+<li> Rizeni_ramene - ridici skript
+</li>
+<li> Pist_pod_ramenem - pist
+</li>
+<li> LabutNaRameni - labut
+</li>
+
+<li> LabutiViewpoint - viewpoint v labuti
+</li>
+<li> LabutiNavigation - navigation info pouze pro otaceni (bez presouvani)
+</li>
+<li> Zigzag_interpolator - pohyb tam a zpet
+</li>
+<li> Cos_interpolator - linearni na cosinovy pohyb
+</li>
+<li> Fazovy_posun - fazovy posun
+
+</li>
+<li> Casovac_ramene_jeden_pohyb - casovac pro sklopeni labuti dolu
+</li>
+<li> Casovac_ramene - casovac pro automaticke zvedani ramene
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE Rizeni_ramene.delka_pistu_changed  TO Pist_pod_ramenem.set_delka_pistu
+ROUTE LabutNaRameni.hodnotaPaky_changed TO Rizeni_ramene.set_uhel_zvednuti_fraction
+ROUTE Rizeni_ramene.uhel_zvednuti_value_changed  TO Rizeni_ramene.set_uhel_zvednuti_nosniku
+ROUTE LabutNaRameni.touchTime TO Rizeni_ramene.set_ramenoKliknuto
+ROUTE Rizeni_ramene.labutAktivni_changed TO LabutiViewpoint.set_bind
+ROUTE Rizeni_ramene.labutAktivni_changed TO LabutiNavigation.set_bind
+ROUTE Rizeni_ramene.labutPripravena_changed TO  LabutNaRameni.set_aktivatorPovolen
+ROUTE Rizeni_ramene.labutAktivni_changed TO  LabutNaRameni.set_panelPovolen
+ROUTE Zigzag_interpolator.value_changed  TO Cos_interpolator.set_fraction
+ROUTE Cos_interpolator.value_changed TO  Rizeni_ramene.set_uhel_zvednuti_fraction
+ROUTE LabutNaRameni.tlacitkoTouchTime_changed TO Rizeni_ramene.set_otaceniAktivni
+ROUTE Rizeni_ramene.initHodnotaPaky_changed  TO LabutNaRameni.set_initHodnotaPaky
+ROUTE Casovac_ramene_jeden_pohyb.fraction_changed TO Fazovy_posun.set_fraction
+ROUTE Fazovy_posun.value_changed TO Cos_interpolator.set_fraction</pre>
+
+<ul>
+<li> dynamicke zapojeni:
+<ul>
+<li> prave pri zapnutem automatickem zvedani existuje - ROUTE: 
+</li>
+</ul>
+</li>
+</ul>
+<pre>ROUTE Casovac_ramene.fraction_changed TO Zigzag_interpolator.set_fraction</pre>
+
+
+
+<h4>KonkretniRameno</h4>
+
+<pre>EXTERNPROTO KonkretniRameno [
+  eventOut SFInt32 aktivniRameno_changed
+  eventOut SFTime otaceniAktivni_changed
+  eventIn SFBool set_labutAktivni
+  eventIn SFBool set_labutPripravena
+  eventIn SFTime prepniAutomatickeZvedani
+  eventIn SFTime spustitRamenoDolu
+] &quot;rameno.wrl#KonkretniRameno&quot;</pre>
+
+<p>
+
+KonkretniRameno slouzi jako proxy pro Rameno.
+
+</p>
+<ul>
+<li> interni uzly:
+<ul>
+<li> R - vnitrni Rameno
+
+</li>
+<li> Rizeni - ridici skript
+</li>
+</ul>
+</li>
+<li> staticke zapojeni:
+</li>
+</ul>
+<pre>ROUTE R.aktivniRameno_changed TO Rizeni.set_aktivniRameno
+ROUTE R.otaceniAktivni_changed TO Rizeni.set_otaceniAktivni
+ROUTE Rizeni.labutAktivni_changed TO R.set_labutAktivni
+ROUTE Rizeni.labutPripravena_changed TO R.set_labutPripravena
+ROUTE Rizeni.prepniAutomatickeZvedani_changed TO R.prepniAutomatickeZvedani
+ROUTE Rizeni.spustitRamenoDolu_changed TO R.spustitRamenoDolu</pre>
+
+		
+		<p><a href="index.html">Zpet na stránku úlohy</a>.</p>
+  </body>
+</html>

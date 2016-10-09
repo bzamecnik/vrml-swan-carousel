@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta name="http-equiv" content="content-type: text/html; charset=cp1250">
+    <title>Virtuální realita - úlohy</title>
+    <style>
+      body {
+				margin: 0 10%;
+				padding: 1em 2em;
+				background-color: #EEA;
+				border: 10px solid #E90;
+				border-top-width: 2em;
+				border-bottom-width: 2em;
+				font-family: sans-serif; 
+			}
+			a {
+				color: #C60;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			table,th,td {
+				border: 1px #000 solid
+			}
+    </style>
+  </head>
+  <body>
+    <h1>Virtuální realita - úlohy</h1>
+    <h2>Úloha č. 2 - Svět s detaily</h2>
+    <h3>Detaily měření FPS</h3>
+    
+    <h4>Hardwarová konfigurace</h4>
+    ASUS m51Va, Intel Core 2 Duo P8600, ATI Mobility Radeon HD 3650 512MB - nezdieľaná
+    <h4>Měření</h4>
+    
+    <table width="100%" cellspacing="0">
+    	<tr><th>Viewpoint</th><th>FPS s LOD</th><th>FPS bez LOD</th>	<th>poměr FPS LOD/NOLOD</th></tr>
+      	<tr><td>Labut-FPS #3</td>		      <td>15,0</td>	<td>15,0</td>	<td>1,00</td></tr>
+      	<tr><td>Labut-FPS #5</td>		      <td>16,0</td>	<td>14,3</td>	<td>1,12</td></tr>
+				<tr><td>Labut-FPS #7</td>		      <td>17,0</td>	<td>15,0</td>	<td>1,13</td></tr>
+				<tr><td>Horska_draha-FPS #9</td>	<td>16,0</td>	<td>14,8</td>	<td>1,08</td></tr>
+				<tr><td>Horska_draha-FPS #11</td>	<td>16,5</td>	<td>14,9</td>	<td>1,12</td></tr>
+				<tr><td>Horska_draha-FPS #13</td>	<td>17,0</td>	<td>14,7</td>	<td>1,16</td></tr>
+				<tr><td>Autodrom-FPS #15</td>		  <td>15,6</td>	<td>14,9</td>	<td>1,05</td></tr>
+				<tr><td>Autodrom-FPS #17</td>		  <td>15,9</td>	<td>14,5</td>	<td>1,10</td></tr>
+				<tr><td>Autodrom-FPS #19</td>		  <td>16,8</td>	<td>14,9</td>	<td>1,13</td></tr>
+    </table>
+    
+    <p>
+		Je vidět, že s přibývající vzdáleností, jak klesá míra zobrazených detailů, se výpočty stávají svižnejšími.
+		Přesto tento zisk není příliš dramatický.
+		</p>
+		<p>
+    Zajímavé by bylo porovnat výkonový zisk oproti řešení předchozí úlohy, kde není použito tolik prototypů
+		případně tolik DEF/USE. 
+    </p>
+    
+    <p align="center"><img src="graf-fps.png" alt="graf fps"></p>
+		
+		<p><a href="index.html">Zpět na stránku úlohy</a>.</p>
+  </body>
+</html>

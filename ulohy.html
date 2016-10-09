@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+
+
+   
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-2">
+
+   
+  <meta name="GENERATOR" content="Mozilla/4.73 [en] (Windows NT 5.0; I) [Netscape]">
+
+   
+  <meta name="Author" content="Jiri Zara">
+
+   
+  
+  <title>Zadani uloh</title><link href="ulohy_soubory/pgr.css" type="text/css" rel="STYLESHEET"></head><body alink="#ff0000" bgcolor="#ffffff" vlink="#ff9900" text="#000000" link="#0000ee">
+
+
+<h1>
+Domácí úlohy - <a href="#1">1</a> <a href="#2">2</a> <a href="#3">3</a> <a href="#4">4</a></h1>
+
+<a name="1"></a>
+<hr>
+<table width="100%">
+
+  <tbody>
+    <tr align="left" valign="top">
+
+      <td>
+      <h1>
+Úloha č. 1: Statický svět a navigace</h1>Vytvořte ve VRML model zábavního parku (tj. <span style="font-weight: bold;">scénu</span>) s různými&nbsp;<span style="font-weight: bold;">atrakcemi</span>.
+Prostor&nbsp;pro atrakce (společný pro všechny členy
+týmu) nechť je vymodelován jednoduše jako
+terén s několika cestičkami. Připravte nejméně 6
+různých stanovišť, která vhodně&nbsp;pojmenujte a
+zorganizujte do posloupnosti určující plynulou
+procházku scénou.&nbsp;Dále připravte dvojici
+speciálních stanovišť pro měření <b>fps</b>, umístěných blízko vedle sebe tak, aby z nich byla vidět celá 
+scéna. Při přepínání mezi nimi (PgUp, PgDn) měřte fps.
+      <p>Každý člen týmu vytvoří model <span style="font-weight: bold;">jedné atrakce</span> (viz&nbsp;<b><a href="http://www.cgg.cvut.cz/members/zara/PGR012/ulohy/temata.html">nabídka modelů</a></b>), který bude vkládán do scény pomocí uzlu <span style="font-weight: bold;">Inline</span>.
+Model může být vytvořen jen ze základních těles.
+Při návrhu jeho struktury však&nbsp;uvažujte
+budoucí rozšíření o interaktivní
+chování a vydávání zvuků.&nbsp;Do
+scény umístěte od každého modelu&nbsp;<b>2 instance</b>
+tak, aby všechny modely byly vidět ze stanovišť
+určených k měření fps. Dále ke každé
+instanci připravte individuální stanoviště.</p>
+      <div style="margin-left: 40px;"><span style="font-style: italic;">Pozn.: Při vytváření modelů se můžete inspirovat projekty z Internetu</span><span style="font-style: italic;">,
+avšak ve vlastní úloze zásadně </span><span style="font-weight: bold; font-style: italic;">nepoužívejte</span><span style="font-style: italic;">
+zdrojové kódy a data existujících modelů.</span></div> </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>===&gt; <b><font color="#993366">Veškerá data úlohy umístěte do adresáře
+....../PGR012/1</font> </b>&lt;===
+<br>
+Adresář bude dále obsahovat:
+</p>
+<dl>
+
+  <dt>
+1) <b>obr.jpg</b> -</dt>
+
+
+  <dd>
+náhled scény (snapnuté okénko) v podobě obrázku o velikosti 128x128 pixelů.</dd>
+
+
+  <dt>
+2) <b>uloha.html</b> -</dt>
+
+
+  <dd>hlavní WWW stránka úlohy. Obsahuje
+zadání, stručný popis řešení s
+rozhraním
+prototypu (až od druhé úlohy) a odkaz na HTML stránku s "EMBED" světem v
+okénku o velikosti přesně 800x600 pixelů.</dd>
+
+
+  <dt>
+3) <b>vse.zip</b> -</dt>
+
+
+  <dd>
+archiv celého adresáře PGR012/1,&nbsp;vyčištěný od nepotřebných dat (balastu).</dd>
+
+</dl>
+
+<b><i>Tato jména jsou závazná a budou sloužit k automatickému vytvoření
+Galerie předmětu PGR012. Další úlohy budete ukládat do adresářů s pořadovými
+čísly 2, 3 a 4.</i></b>
+<h3>
+<font color="#cc0000">Kritéria pro hodnocení:</font></h3>
+
+
+<ul>
+
+  <li>Formální úplnost HTML stránky -
+jména členů týmu, download ZIPu, náhledový
+obrázek, apod.</li><li>Splnění zadání&nbsp;(scéna s šesti instancemi modelů).</li>
+
+
+  <li>Rozmístění a pojmenování stanovišť u jednotlivých instancí.</li><li>Umístění stanovišť pro měření fps.
+</li>
+
+
+  <li>Struktura souborů wrl (maximální využívání DEF a USE).</li><li>Uvedení jmen autorů do všech souborů wrl (WorldInfo).</li>
+
+
+  <li>Efektivita modelu a (později) animací - dostatečně vysoká hodnota fps.</li>
+
+
+  <li>
+Estetický zážitek (tvary, barvy).</li>
+
+</ul>
+
+<a name="2"></a>
+<hr>
+<table width="100%">
+
+  <tbody>
+    <tr><td colspan="2" rowspan="1"><h1>
+Úloha č. 2: Svět s detaily</h1></td></tr><tr align="left" valign="top">
+
+      <td>
+      Přetvořte model z úlohy č. 1: 
+<ol><li>Model bude definován jako <span style="font-weight: bold;">prototyp</span> 
+(v samostatném souboru), obsahující různé stupně detailu pro různé součásti. 
+Zaveďte nejméně 3 různé stupně detailu. Parametrem prototypu bude volba, zda 
+vlastnost <span style="font-weight: bold;">LOD</span> má být zapnuta či vypnuta 
+(viz následující tabulka), volba barvy nějaké části modelu a volba textury 
+použité na nějakou část modelu.
+</li><li>Každá instance prototypu ve scéně nechť využívá odlišné <span style="font-weight: bold;">textury</span> a <span style="font-weight: bold;">barvy</span> (alespoň pro některé své části).
+</li><li>V modelu použijte nejméně jeden <span style="font-weight: bold;">geometrický 
+prvek</span> odlišný od základních těles. Jeho tvar můžete vymodelovat v 
+externím modeláři (např. Blender) a šikovně exportovat do VRML. Vylepšete tak 
+tvar modelu.
+</li><li>Textury aplikujte pouze pro nejlepší kvalitu
+LOD. Součet dekomprimovaných velikostí všech
+textur týmu nesmí přesáhnout 16 MB. Výpočet
+potřebné texturovací paměti uveďte na
+příslušnou webovou stránku.
+</li><li>K úloze vytvořte v adresáři /2
+příslušné stránky s informacemi o
+vlastnostech virtuální scény (okomentovaná
+záhlaví prototypů). Testovací scéna bude
+totožná se scénou z minulé úlohy,&nbsp;bude
+však existovat ve dvou verzích - se zapnutým a s
+vypnutým LOD pro všechny modely ve
+scéně.
+</li><li>Proveďte <span style="font-weight: bold;">měření snímkové rychlosti</span> 
+pro různé stupně detailu, které zveřejníte v souboru <b>detaily.html</b>.
+</li><li>Všechny WRL soubory ukládejte na disk <b>v komprimované podobě</b>.</li></ol>&nbsp;
+      <table style="background-color: rgb(255, 255, 204); text-align: left; margin-left: auto; margin-right: auto;" border="1" cols="1">
+
+        <tbody>
+          <tr>
+
+            <td><tt>#VRML V2.0 utf8</tt>
+            <br>
+            <tt>PROTO Model [ exposedField SFInt32 lod 1</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+exposedField SFColor barva 0 .6 .8</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# ... a další parametry dle libosti</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+]</tt>
+            <br>
+            <tt># lod: 0 - LOD vypnuto</tt>
+            <br>
+            <tt>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 - LOD zapnuto</tt>
+            <br>
+            <tt>{ Switch { whichChoice IS lod</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp; choice [Group {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# varianta bez LOD</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LOD&nbsp;&nbsp; {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # varianta s LOD</tt>
+            <br>
+            <tt>&nbsp;&nbsp;&nbsp; ]</tt>
+            <br>
+            <tt>&nbsp; }</tt>
+            <br>
+            <tt>}</tt></td>
+
+          </tr>
+
+        </tbody>
+      </table>
+
+      </td>
+
+
+      <td>
+      <embed src="ulohy_soubory/kolotoc.wrl" width="350" height="350"><a class="pnshhzxftcyzdmnnzago" href="http://www.cgg.cvut.cz/members/zara/PGR012/ulohy/kolotoc.wrl"></a>
+      <center>Soubor&nbsp;<a href="http://www.cgg.cvut.cz/members/zara/PGR012/ulohy/kolotoc.wrl">kolotoc.wrl</a></center>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>Obsah adresáře <b>PGR012/2</b> (jména souborů) nechť odpovídá obsahu adresáře
+<b>PGR012/1</b>.
+<p><font color="#993366">===&gt; Jak měřit <b>Snímkovou rychlost</b>:</font>
+</p>
+<ol><li>Do scény přidejte ještě další nová stanoviště pro měření <b>fps</b>,
+umístěná v různých vzdálenostech
+příslušných danému stupni detailu (pro
+každou vzdálenost dvojice stanovišť
+umístěná vedle sebe s rozdílem polohy cca 1 m v
+levopravém směru). Kolik stupňů LOD, tolik dvojic
+měřicích stanovišť. Zorný úhel a
+umístění stanovišť volte tak, aby z nich byly
+vidět&nbsp;všechny objekty naráz.
+</li><li>Samotná měření provádějte při přepínání (PgUp, PgDn) mezi danými dvojicemi 
+stanovišť v pevně daném "EMBED" okénku o velikosti 800x600 pixelů. Příklad 
+použití značky EMBED:<br><span style="font-family: monospace;">&lt;embed 
+src="scena.wrl" border=0&nbsp;width="800" height="600"&gt;</span>.<br>
+</li><li>Měření pochopitelně proveďte pro obě (obsahově totožné) scény: s LOD i bez 
+LOD. Na tyto scény umístěte odkazy z HTML stránky.
+</li><li>Výsledky měření (včetně poměru <b><i>fps</i></b> pro verzi s/bez LOD) 
+uspořádejte do přehledné tabulky doplněné vysvětlujícím textem. Tabulku doplňte 
+grafem.</li></ol>
+
+
+<h3>
+<font color="#cc0000">Kritéria pro hodnocení:</font></h3>
+
+
+<ul><li>Formální úplnost HTML stránky - download ZIPu, náhledový obrázek, 
+okomentovaný popis záhlaví prototypu apod.
+</li><li>Kvalitně provedené měření (s informací o HW konfiguraci počítače použitého 
+pro testování) sepsané do tabulky v HTML stránce.
+</li><li>Výpočet dekomprimované velikosti všech
+textur (max. 16 MB) a jejich náhledy&nbsp;na webové
+stránce.
+</li><li>Rozmístění a pojmenování
+stanovišť - jak určených k procházce mezi všemi modely, tak k měření rychlosti.
+</li><li>Kvalita tvaru modelu, použití jiných geometrických uzlů než jen základních 
+těles.
+</li><li>Používání USE, PROTO, LOD a WorldInfo.
+</li><li>Vysoká rychlost zobrazování (fps).</li><li>Ukládání WRL souborů v komprimovaném tvaru.
+</li><li>Estetický zážitek (tvary, textury, barvy).</li></ul>
+
+<a name="3"></a>
+<hr>
+<table width="100%">
+
+  <tbody>
+    <tr align="left" valign="top">
+
+      <td>
+      <h1>
+Úloha č. 3: Dynamický svět</h1>Přetvořte statické modely&nbsp;do podoby funkčních, pohyblivých a ozvučených modelů: 
+<ol><li>Od této chvíle zpracovávejte pouze variantu modelu s LOD.
+</li><li>Reakce na přítomnost avatara (<b>ProximitySensor</b>) způsobí 
+<i>rozsvícení</i> světla nad modelem, jehož barva bude nastavitelná ze 
+záhlaví prototypu. Každý model nechť je osvětlen jinou barvou. Při odchodu 
+avatara světlo zhasne. Senzor definujte uvnitř prototypu. Stanoviště ve scéně 
+aktualizujte tak, aby byla umístěna na okraji citlivé oblasti senzoru.
+</li><li>S pomocí manipulátoru bude možno <i>změnit</i> polohu či tvar některé části modelu či celého modelu.<br>
+</li><li>Kliknutím na další vybranou část modelu 
+(<b>TouchSensor</b>.touchTime)&nbsp;zahajte <i>animaci pohybu</i> této části a animaci 
+<i>barev</i>.</li><li>Každou animace doprovázejte vhodným <i>zvukem.</i>
+Celkový součet všech zvukových souborů týmu
+však nesmí být větší než 1MB.&nbsp;
+</li><li>K úloze vytvořte v adresáři /3 příslušné stránky. Přidejte k nim informace o 
+dynamických vlastnostech (uveďte <b>blokové schéma</b> dynamických akcí, tj. 
+předávání událostí).
+</li><li>Porovnejte, zda přidání dynamiky (uloha 3) změnilo fps ve srovnání se 
+stejným, avšak statickým modelem (úloha 2). Uvažujte pouze varianty s LOD. 
+Výsledky měření opět zveřejněte.</li></ol></td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+<h3>
+<font color="#cc0000">Kritéria pro hodnocení:</font></h3>
+
+
+<ul><li>Formální úplnost HTML stránky, schéma a popis dynamických akcí.
+</li><li>Omezená velikost&nbsp;zvuků (v součtu méně než 1MB).
+</li><li>Kvalitně provedené měření a porovnání <b>fps</b> pro statické a dynamické 
+modely.
+</li><li>Použití uzlu ProximitySensor a nastavení&nbsp;citlivé zóny s ohledem na umístění 
+stanovišť u modelů.
+</li><li>Vhodné umístění a nastavení světelných zdrojů (poloha, barva).
+</li><li>Použití a nastavení uzlů TouchSensor a manipulátoru.
+</li><li>Estetický zážitek ze zvuků a animací (pozice, barvy) pro alespoň 2 části 
+každého modelu.</li></ul>
+
+<a name="4"></a>
+<hr>
+<table width="100%">
+
+  <tbody>
+    <tr><td colspan="2" rowspan="1"><h1>
+Úloha č. 4: Inteligentní svět (se skriptem)</h1>
+
+
+      
+      </td></tr><tr align="left" valign="top">
+
+      <td>
+      
+
+
+      
+      <ol></ol><ol><li>Ke každému modelu přidejte ve smyčce běžící animaci reprezentující "<span style="font-style: italic;">stroj v chodu</span>".
+</li><li>Přidejte ke každému modelu "<i>hlavní vypínač</i>" (ovládaný&nbsp;skriptem), 
+který po stisknutí:
+<ul><li>změní svoji polohu a barvu
+</li><li>vypne/zapne všechny animace a senzory (s výjimkou svého vlastního 
+spouštěcího senzoru), tedy jak animace z předchozí úlohy, tak animaci typu 
+"<span style="font-style: italic;">stroj v chodu</span>".</li></ul>
+</li><li>Na existenci tohoto důležitého vypínače upozorněte uživatele vhodnou animací 
+(barvy, velikosti) běžící v nepřetržitém cyklu. Hlavní vypínač definujte v těle 
+prototypu.
+</li><li>Skript dále vylepšete tak, aby po
+zastavení a následném spuštění modelu došlo k <span style="font-weight: bold;">pokračování</span> všech animací z 
+naposledy dosaženého stavu (polohy, barvy, přehrávání zvuků apod.), tedy nikoliv 
+opět od začátku
+</li><li>Vytvořte panel HUD (Head-Up Display) s jedním tlačítkem a umístěte jej do 
+scény. Propojte tlačítko s hlavními vypínači&nbsp;<span style="font-weight: bold;">všech</span> modelů a umožněte tak 
+spouštění/zastavení celé scény tímto přepínačem.
+</li><li><font color="#000000">Definujte druhé tlačítko v panelu HUD jako </font><font color="#000000">přepínač&nbsp;<span style="font-weight: bold;">noc/den</span></font><font color="#000000">, po jehož 
+stisknutí se rozsvítí, resp. zhasnou světla nad všemi modely</font><font color="#000000">. Spolu s těmito světly&nbsp;měňte barvu pozadí scény&nbsp;a stav avatarovy 
+svítilny.</font></li><li><font color="#000000">Navrhněte
+a pomocí skriptu implementujte "inteligentní"
+chování modelu, tedy takovou funkčnost, která se
+maximálně blíží chování modelu v
+reálném světe. Tuto funkci popište.<br></font></li></ol><ol></ol>
+
+      </td>
+
+
+      <td style="text-align: center;"><img src="ulohy_soubory/hud.gif" width="256" height="248"><br>
+Soubor <a href="http://www.cgg.cvut.cz/members/zara/PGR012/ulohy/HUD.wrl">HUD.wrl</a></td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p><b><font color="#cc0000"><font size="+1">Kritéria pro hodnocení:</font></font></b>
+</p>
+<ul><li>Popis a výpis skriptů na HTML stránce.
+</li><li>Animace (se zvukem) typu "stroj v chodu".
+</li><li>Funkčnost hlavního vypínače.</li><li>Pokročilá funkcionalita (inteligence) modelu &nbsp; </li><li>Estetické provedení hlavního vypínače.
+</li><li>Estetické provedení přechodu noc/den.
+</li><li>Estetické provedení&nbsp;a funkčnost prvků HUD.</li></ul>
+
+<hr>
+<center><i>Datum poslední změny 28.9.2009, Jiří Žára</i></center>
+</body></html>

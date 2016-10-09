@@ -1,0 +1,575 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info [
+		"Author: Martin Galajda, Ivan Jankovic, Bohumir Zamecnik",
+		"Date: 23.11.2009",
+		"Url: http://mff.zamecnik.org/virtualni-realita/PGR012/"
+	]
+	title "Luna Park - autodrom, horska draha, labutovy kolotoc"
+}
+
+DEF MainNavigationInfo NavigationInfo {
+	type ["WALK", "ANY"]
+	headlight FALSE
+}
+
+# ------------------------------ Viewpointy ------------------------------
+
+# -------------------- Prochazka luna parkem --------------------
+
+Viewpoint {
+	description	"Vstup do parku"
+	position -24 1.6 40
+	orientation	0 1 0 -1.02
+}
+
+Viewpoint {
+	description	"Horska draha #1 na pomedzi proximity senzor"
+	position -30.2 1.6 35.84
+	orientation	0 1 0 1.57
+}
+
+Viewpoint {
+	description	"Autodrom #1"
+	position -14.6 1.6 45.1
+	orientation	0 1 0 0.5
+}
+
+Viewpoint {
+	description	"Labute #1"
+	position 1 1.6 20
+	orientation	-0.02 1 -0.1 3.65
+}
+
+Viewpoint {
+	description	"Horska draha #2 na pomedzi proximity senzor"
+	position 30.2 1.6 -35.84
+	orientation	0 1 0 -1.57
+}
+
+# TODO: posunout jinam! lezi to zas v horske draze
+Viewpoint {
+	description	"Autodrom #2"
+	position 35.1 1.6 -37
+	orientation	0 1 0 2.3
+}
+
+Viewpoint {
+	description	"Labute #2"
+	position -25 1.6 -34.5
+	orientation	0 1 0 -1.5
+}
+
+
+# -------------------- mereni FPS --------------------
+
+Viewpoint {
+	description	"FPS #1"
+	position 85 65 85
+	orientation	-1 1.45 0.5 1
+}
+
+Viewpoint {
+	description	"FPS #2"
+	position 85 65 85
+	orientation	-1 1.45 0.5 0.99
+}
+# ---------- Labut ----------
+Viewpoint {
+	description	"Labut-FPS #3"
+	position 5 5 50
+	orientation	0 0 1 0
+	fieldOfView	2
+}
+Viewpoint {
+	description	"Labut-FPS #4"
+	position 6 5 50
+	orientation	0 0 1 0
+	fieldOfView	2
+}
+#===========================
+Viewpoint {
+	description	"Labut-FPS #5"
+	position 5 5 70
+	orientation	0 0 1 0
+	fieldOfView	1.5
+}
+Viewpoint {
+	description	"Labut-FPS #6"
+	position 6 5 70
+	orientation	0 0 1 0
+	fieldOfView	1.5
+}
+#===========================
+Viewpoint {
+	description	"Labut-FPS #7"
+	position 5 15 100
+	orientation	0 0 1 0
+	fieldOfView	1.2
+}
+Viewpoint {
+	description	"Labut-FPS #8"
+	position 6 15 100
+	orientation	0 0 1 0
+	fieldOfView	1.2
+}
+# ---------- Horska_draha ----------
+Viewpoint {
+	description	"Horska_draha-FPS #9"
+	position -55 5 45
+	orientation	0 1 0 -0.7
+	fieldOfView	1.5
+}
+Viewpoint {
+	description	"Horska_draha-FPS #10"
+	position -54 5 45
+	orientation	0 1 0 -0.7
+	fieldOfView	1.5
+}
+#==================================
+Viewpoint {
+	description	"Horska_draha-FPS #11"
+	position -61 10 65
+	orientation	0 1 0 -0.7
+	fieldOfView	1.2
+}
+Viewpoint {
+	description	"Horska_draha-FPS #12"
+	position -60 10 65
+	orientation	0 1 0 -0.7
+	fieldOfView	1.2
+}
+#=================================
+Viewpoint {
+	description	"Horska_draha-FPS #13"
+	position -61 10 100
+	orientation	0 1 0 -0.7
+	fieldOfView	1.2
+}
+Viewpoint {
+	description	"Horska_draha-FPS #14"
+	position -60 10 100
+	orientation	0 1 0 -0.7
+	fieldOfView	1.2
+}
+# ---------- Autodrom ----------
+Viewpoint {
+	description	"Autodrom-FPS #15"
+	position -24 5 45
+	orientation	0 1 0 -0.2
+	fieldOfView	2.5
+}
+Viewpoint {
+	description	"Autodrom-FPS #16"
+	position -25 5 45
+	orientation	0 1 0 -0.2
+	fieldOfView	2.5
+}
+#================================
+Viewpoint {
+	description	"Autodrom-FPS #17"
+	position -24 10 70
+	orientation	0 1 0 -0.2
+	fieldOfView	1.5
+}
+Viewpoint {
+	description	"Autodrom-FPS #18"
+	position -25 10 70
+	orientation	0 1 0 -0.2
+	fieldOfView	1.5
+}
+#==================================
+Viewpoint {
+	description	"Autodrom-FPS #19"
+	position -24 10 110
+	orientation	0 1 0 -0.2
+	fieldOfView	1
+}
+Viewpoint {
+	description	"Autodrom-FPS #20"
+	position -25 10 110
+	orientation	0 1 0 -0.2
+	fieldOfView	1
+}
+
+# -------------------- dalsi viewpointy	--------------------
+
+Viewpoint {
+	description	"Autodromy a labute"
+	position 55 20 -50
+	orientation	-0.05 1 0.1 2.22
+}
+
+
+Viewpoint {
+	description	"Labute #1 z venku"
+	position 11 1.6 50
+	orientation	1 0 0 0.1
+}
+
+Viewpoint {
+	description	"Labute #2 z venku"
+	position -11 1.6 -49
+	orientation	0 1 0 3.2
+}
+
+Viewpoint {
+	description	"Pohled shora"
+	fieldOfView	1.570796
+	position 0 60 0
+	orientation	1 0 0 -1.570796
+}
+
+# ------------------------------ Pozadi ------------------------------
+
+DEF NightBackground Background {
+	# Zapad slunce - imitace Rayleighova scatteringu
+	skyColor [
+		0.027, 0.215, 0.592,
+		0.286 0.458 0.815, 
+		0.717 0.835 0.882,
+		0.878, 0.745, 0.482,
+		0.933594 0.457031 0.089844,
+		0.717, 0.184, 0.082,
+		0 0.1 0.1
+	]
+	skyAngle [1.1 1.3 1.4 1.45 1.5 1.6]
+
+	# Vecerni trava
+	groundColor [
+		0.129, 0.631, 0.321
+		0.129, 0.631, 0.321
+		0.156, 0.360, 0.254
+	]
+	groundAngle	[1.25 1.57]
+}
+
+DEF DayBackground Background {
+	# credits: prof. Jiri Zara: Laskavy Pruvodce Virtualnimy Svety (kap2/o-2-1.wrl)
+	skyColor [0.2 0.3 1, 0.2 0.3 1, 1 1 1]
+	skyAngle [1.5, 1.57]
+	groundAngle 1.57
+	groundColor [0 0 0, 0.5 0.4 0.1]
+}
+
+# ------------------------------ Externi prototypy ------------------------------
+
+EXTERNPROTO Labutovy_kolotoc [
+	field SFColor vyraznaBarva
+	field SFNode texturaPlechu
+	field SFColor barvaSvetla
+	field SFString dirPrefix
+	field SFInt32 pocetRamen
+	eventIn	SFBool jePauza
+	eventIn	SFBool svetlaZapnuta
+] "labutovy_kolotoc/labutovy-kolotoc.wrl#Labutovy_kolotoc"
+
+EXTERNPROTO autodrom [
+    eventIn	SFBool control_lights
+	eventIn	SFBool set_active
+	field SFInt32 lod
+    field SFColor color
+	field SFColor lightColor
+    field SFNode texture 
+    field SFInt32 layoutChoice
+] "autodrom/Autodrom.wrl#autodrom"
+
+EXTERNPROTO RollerCoster [
+	field SFInt32 lod
+	field MFString texturaVlaku
+	field SFColor farbaVlaku
+	field MFString texturaTramu
+	field SFColor farbaTramuRollerky
+	field SFColor farbaSvetlaNadVlakom
+] "horska_draha/scene.wrl#RollerCoster"
+
+
+EXTERNPROTO OvladaciPanelHUD [
+	field SFNode vzhledPanelu
+	eventOut SFBool jeDen_changed
+	eventOut SFBool jePauza_changed
+] "lib/tlacitko.wrl#OvladaciPanelHUD"
+
+# ------------------------------ Park ------------------------------
+
+DEF Park Group {
+	children [
+		# -------------------- Atrakce --------------------
+
+		# ---------- Labutovy kolotoc ----------
+		Transform {
+			rotation 0 1 0 -1.57
+			translation	10 0 35
+			children 
+			DEF Labutovy_kolotoc1 Labutovy_kolotoc {
+				texturaPlechu ImageTexture {
+					url	"labutovy_kolotoc/tex-kov2.jpg"
+					repeatS	TRUE
+					repeatT	TRUE
+				}
+				barvaSvetla	0.8 0.8 0  # zlute svetlo
+				dirPrefix "labutovy_kolotoc"
+				pocetRamen 8
+			}
+		}
+		Transform {
+			rotation 0 1 0 -1.57
+			translation	-10 0 -35
+			children
+			DEF Labutovy_kolotoc2 Labutovy_kolotoc {
+				vyraznaBarva .25 .73 .9
+				texturaPlechu ImageTexture {
+					url	"labutovy_kolotoc/tex-kov1.jpg"
+					repeatS	TRUE
+					repeatT	TRUE
+				}
+				barvaSvetla	0 0 0.8 # modre svetlo
+				dirPrefix "labutovy_kolotoc"
+				pocetRamen 5
+			}
+		}
+
+		# ---------- Horska draha ----------
+		Transform {
+			translation	51 0.035 -35.84
+			rotation 0 1 0 -1.57079633
+			children
+			DEF RollerCoster1 RollerCoster {
+				lod 1
+				farbaSvetlaNadVlakom 1 0 1
+			}
+		}
+		Transform {
+			translation	-51 0.035 35.84
+			rotation 0 1 0 1.570796327
+			children
+			DEF RollerCoster2 RollerCoster  {
+				texturaTramu "horska_draha/textury/dub_cerveny.jpg"
+				texturaVlaku "horska_draha/textury/iron_floor.jpg"
+				farbaVlaku 0.589 0.585 0.566
+				lod 1
+				farbaSvetlaNadVlakom 0 1 1
+			}
+		}
+
+		# ---------- Autodrom ----------
+		Transform {
+    		translation 20 0 -20
+    		rotation 0 1 0 1.57
+    		children DEF Autodrom1 autodrom {
+				lod 1
+				layoutChoice 0
+				color 1 1 1
+				lightColor 0 0 1 
+				texture ImageTexture {
+    				url "autodrom/texture1.jpg"
+    			}
+			}
+		},
+		Transform {
+    		translation -20 0 20
+    		rotation 0 1 0 1.57
+    		children DEF Autodrom2 autodrom {
+				lod 1
+				layoutChoice 1
+				color 1 1 0
+				lightColor 0 1 0
+				texture ImageTexture {
+    				url "autodrom/texture2.jpg"
+    			}
+			}
+		}
+
+		# -------------------- Zed kolem parku --------------------
+		# TODO: textura by byla pekna
+		DEF	Zed_kolem_parku Group  {
+			children [
+				Transform {
+					translation 0 0.5 48
+					children
+					DEF Delsi_zed Shape {
+						geometry Box {
+							size 130.2 1 0.2
+						}
+						appearance Appearance {
+							material DEF Barva_zdi Material {
+								diffuseColor .4 .38 .129
+								specularColor .137 .0745 .00784
+								ambientIntensity .0733
+								shininess .07
+							}
+						}
+					}
+				}
+				Transform {
+					translation 0 0.5 -48
+					children USE Delsi_zed
+				}
+				Transform {
+					translation 65 0.5 0
+					children
+					DEF Kratsi_zed Transform {
+						rotation 0 1 0 1.5708
+						children
+						Shape {
+							geometry Box {
+								size 96.2 1 0.2
+							}
+							appearance Appearance {
+								material USE Barva_zdi
+							}
+						}
+					}
+				}
+				Transform {
+					translation -65 0.5 0
+					children USE Kratsi_zed
+				}
+			]
+		}
+		# -------------------- Trava --------------------
+		# vice kusu je treba kvuli dire v horske draze, kde se koleje dostavaji pod uroven povrchu
+		# TODO: chtelo by to elevation grid, kvuli tomu, ze horska draha ma nerovny teren
+		Transform {
+			translation	-35 0 -43.84
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 70
+					zSpacing 87.68
+					height[0 0, 0 0]
+				}
+				appearance DEF trava Appearance {
+					material Material {
+						diffuseColor .04 .31 0
+						specularColor .25 .51 .01
+						ambientIntensity .02
+						shininess .12
+					}
+				}
+			}
+		}
+		Transform {
+			translation	-65 0 -48.1
+			children
+			Shape {
+				geometry ElevationGrid {
+					xDimension 2
+					zDimension 2
+					xSpacing 7.1
+					zSpacing 96.2
+					height[0 0, 0 0]
+				}
+				appearance USE trava
+			}
+		}
+		
+		# -------------------- Osvetleni celeho parku --------------------
+		# hlavni cross light
+		DEF MainLight1 DirectionalLight {
+			direction 1 -0.5 -1
+			intensity 0.4
+			ambientIntensity 0.5
+		}
+		DEF MainLight2 DirectionalLight {
+			direction -1 -0.5 1
+			intensity 0.4
+			ambientIntensity 0.5
+		}
+		#			# vedlejsi cross light
+		#			DirectionalLight {
+		#				direction -1 -0.75 -1
+		#				intensity 0.4
+		#			}
+		#			DirectionalLight {
+		#				direction 1 -0.75 1
+		#				intensity 0.4
+		#			}
+		# -------------------- Head-up display --------------------
+		DEF HUDSensor ProximitySensor { size 300 300 300 }
+
+		DEF HUD Transform {
+			children Transform {
+    			translation -0.62 -0.4 -1.3
+				rotation 1 0 0 1.57
+    			children DEF HUDOvladaciPanel OvladaciPanelHUD {
+					vzhledPanelu Appearance	{
+						material Material {
+							diffuseColor .45 .71 .08
+							emissiveColor .278 .482 .157
+							ambientIntensity 0
+							shininess 0
+						}
+					}
+				}
+			}
+		}
+	]
+}
+
+DEF	DaylightControl Script {
+	eventIn	SFBool enableDay # TRUE = day, FALSE = night
+	eventOut SFBool dayEnabled_changed
+	eventOut SFBool nightEnabled_changed
+	
+	field SFNode DayBackground USE DayBackground
+	field SFNode NightBackground USE NightBackground
+	field SFNode MainLight1 USE MainLight1
+	field SFNode MainLight2 USE MainLight2
+	field SFNode MainNavigationInfo USE MainNavigationInfo
+
+	directOutput TRUE
+
+	url	"javascript:
+	function enableDay(day) {
+		if (day) {
+			DayBackground.set_bind = true;
+			MainLight1.intensity = 0.6;
+			MainLight2.intensity = 0.6;
+		} else {
+			NightBackground.set_bind = true;
+			MainLight1.intensity = 0.4;
+			MainLight2.intensity = 0.4;
+		}
+//		MainLight1.enabled = !day;
+//		MainLight2.enabled = !day;
+		MainNavigationInfo.headlight = day;
+		dayEnabled_changed = day;
+		nightEnabled_changed = !day;
+	}
+	"
+}
+
+# --- pozice HUD ---
+
+ROUTE HUDSensor.orientation_changed TO HUD.rotation
+ROUTE HUDSensor.position_changed    TO HUD.translation
+ROUTE HUDSensor.position_changed    TO HUDSensor.center
+ROUTE HUDOvladaciPanel.jeDen_changed  TO DaylightControl.enableDay
+
+# TODO: zapnout nasledujici, az budou mit modely vstup pro pauzovaci signal
+
+# --- pauza ---
+
+ROUTE HUDOvladaciPanel.jePauza_changed TO Labutovy_kolotoc1.jePauza
+ROUTE HUDOvladaciPanel.jePauza_changed TO Labutovy_kolotoc2.jePauza
+
+#ROUTE HUDOvladaciPanel.jePauza_changed TO RollerCoster1.jePauza
+#ROUTE HUDOvladaciPanel.jePauza_changed TO RollerCoster1.jePauza
+
+ROUTE HUDOvladaciPanel.jePauza_changed TO Autodrom1.set_active
+ROUTE HUDOvladaciPanel.jePauza_changed TO Autodrom2.set_active
+
+# --- svetla v modelu ---
+
+ROUTE DaylightControl.nightEnabled_changed TO Labutovy_kolotoc1.svetlaZapnuta
+ROUTE DaylightControl.nightEnabled_changed TO Labutovy_kolotoc1.svetlaZapnuta
+
+#ROUTE DaylightControl.dayEnabled_changed TO RollerCoster1.svetlaZapnuta
+#ROUTE DaylightControl.dayEnabled_changed TO RollerCoster1.svetlaZapnuta
+
+ROUTE DaylightControl.nightEnabled_changed TO Autodrom1.control_lights
+ROUTE DaylightControl.nightEnabled_changed TO Autodrom2.control_lights

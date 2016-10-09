@@ -1,0 +1,234 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 23.11.2009"]
+	title "Labutovy kolotoc / Swan Carousel"
+}
+
+# kolotoc:
+# * platforma
+# *   valec_nastupiste
+# *   schody (4x)
+# * otocna_cast
+# *   stredovy rotor
+# *     hlavni_cast_rotoru
+# *     ozdobna_cepice_rotoru
+# *   ramena (8x)
+# *     rameno
+# *       Hlavni_nosnik_umisteni_1
+#         pomocne_nosniky (2x, shora)
+#         spojnice_mezi_hlavnim_a_vedlejsimi_nosniky (zmijovy tvar, mnohokrat pro kazdy pomocny nosnik)
+# *     hydralicky_pist
+# *       vnejsi_cast_pistu
+#         vnitrni_cast_pistu
+# *     labutova_sedacka
+# *       obal
+# *       sedadlo
+# *       pripojeni_k_ramenu
+#         ovladaci_panel
+#           tlacitko_nahoru_dolu
+#           tlacitko_start_stop
+# ? ovladaci_budka
+
+EXTERNPROTO	Podstava [
+	field SFNode barevnyMaterial
+	field SFNode texturaPlechu
+	field SFNode materialPlechu
+] "podstava.wrl#Podstava"
+
+EXTERNPROTO	Rotor [
+	field SFNode barevnyMaterial
+	field SFInt32 pocetRamen
+	eventIn SFTime prepnuti
+	eventIn SFBool set_otaceni_vypnuto
+	eventIn SFBool set_otaceni_zapnuto
+	eventIn SFBool set_senzoryPovoleny
+	eventIn SFBool set_jePauza
+	field SFString dirPrefix
+] "rotor.wrl#Rotor"
+
+EXTERNPROTO OvladaciPanelKolotoce [
+	field SFNode vzhledPanelu
+	eventOut SFTime tlacitkoPohotovostniTouchTime_changed
+	eventIn SFBool jePauza
+	eventOut SFBool jePauza_changed
+	eventIn SFBool pauzaPovolena
+] "ovladaci-panel.wrl#OvladaciPanelKolotoce"
+
+PROTO Labutovy_kolotoc [
+	field SFColor vyraznaBarva .55 .09 .05
+	field SFNode texturaPlechu NULL
+	field SFColor barvaSvetla 1 1 1
+	#field SFNode Casovac_rotoru NULL
+	field SFString dirPrefix "."
+	field SFInt32 pocetRamen 8
+	eventIn	SFBool jePauza
+	eventIn	SFBool svetlaZapnuta
+] {
+	Group {
+		children [
+			LOD	{
+				range [ 150 200 ]
+				# Poznamka:
+				# LOD je pouzito u jednotlivych komponent, tudiz existuje
+				# jemnejsi deleni nez 3 varianty na nejvyssi urovni.
+				level [
+					# level 0 - nejvyssi uroven detailu
+					DEF Kolotoc_LOD0 Group {
+						children [
+							Transform {
+								translation	0 1 0
+								children [
+									DEF Rotor Rotor {
+										barevnyMaterial DEF BarevnyPovrch Material {
+											diffuseColor IS vyraznaBarva
+											specularColor .25 .25 .25
+											ambientIntensity .6
+											specularColor .251 .251 .251
+										}
+										dirPrefix IS dirPrefix
+										pocetRamen IS pocetRamen
+									}
+								]
+							}
+							DEF Podstava Transform {
+								translation	0 0.5 0
+								children [
+									Podstava {
+										barevnyMaterial USE BarevnyPovrch
+										texturaPlechu IS texturaPlechu
+									}
+									#DEF Kototoc_touch TouchSensor {}
+								]
+							}
+							DEF	OvladaciSloupek Transform {
+								translation	2 0.75 8
+								children Group {
+									children [
+										Shape {
+											geometry Box {
+												size 0.02 1.5 0.02
+											}
+											appearance Appearance {
+												material USE BarevnyPovrch
+											}
+										}
+										Transform {
+											rotation 1 0 0 1.57
+											translation	0 0.85 0
+											children
+											DEF OvladaciPanelKolotoce OvladaciPanelKolotoce {
+												vzhledPanelu Appearance	{
+													material Material {
+														diffuseColor .8 .63 0
+														ambientIntensity .475
+														emissiveColor .122 .0863 0
+													}
+												}
+											}
+										}
+									]
+								}
+							}
+
+							DEF Svetlo_1 PointLight {
+								location 0 7 0
+								radius 9
+								intensity 0.7
+								color IS barvaSvetla
+								on FALSE
+							}
+							#		PointLight {
+							#			location 1 2 1
+							#			radius 3
+							#			intensity 0.5
+							#		}
+							#		PointLight {
+							#			location -1 2 -1
+							#			radius 3
+							#			intensity 0.5
+							#		}
+						]
+					}
+					# level 1
+					USE	Podstava
+					# level 2 - kolotoc neni videt
+					Group {}
+				]
+			}
+			DEF Kototoc_proximity ProximitySensor {
+				size 30 30 30
+			}
+			Sound {
+				minFront 10
+				maxFront 20
+				minBack 10
+				maxBack 20
+				# the url is set in the script's initialization
+				source DEF Tlacitko_klik AudioClip {}
+			}
+		]
+	}
+	DEF Rizeni Script {
+		field SFNode Tlacitko_klik USE Tlacitko_klik
+		field SFString dirPrefix IS dirPrefix
+		eventIn SFBool jePauzaInterni
+		eventIn SFBool jePauzaExterni IS	jePauza
+		eventOut SFBool jePauza_changed
+		eventOut SFBool jePauzaExterni_changed
+		eventOut SFBool pauzaPovolena
+		eventIn SFBool svetlaZapnuta IS	svetlaZapnuta
+		eventOut SFBool svetlaZapnuta_changed
+		url "javascript:
+		function initialize() {
+			// kliknuti, autor: Bohumir Zamecnik
+			Tlacitko_klik.url = new MFString(dirPrefix + '/klik.wav');
+		}
+		function jePauza(value) {
+			jePauza_changed = value;
+		}
+		function jePauzaExterni(value) {
+			pauzaPovolena = !value;
+			jePauzaExterni_changed = value;
+			jePauza(value);
+		}
+		function jePauzaInterni(value) {
+			jePauza(value);
+		}
+		function svetlaZapnuta(value) {
+			svetlaZapnuta_changed = value;
+		}
+		"
+	}
+	ROUTE Kototoc_proximity.isActive TO	Svetlo_1.on
+	ROUTE OvladaciPanelKolotoce.tlacitkoPohotovostniTouchTime_changed TO Rotor.prepnuti	
+	ROUTE OvladaciPanelKolotoce.tlacitkoPohotovostniTouchTime_changed TO Tlacitko_klik.startTime
+	ROUTE Rizeni.jePauzaExterni_changed TO OvladaciPanelKolotoce.jePauza
+	ROUTE OvladaciPanelKolotoce.jePauza_changed	TO Rizeni.jePauzaInterni
+	ROUTE Rizeni.svetlaZapnuta_changed TO Svetlo_1.on
+	ROUTE Rizeni.jePauza_changed TO Rotor.set_jePauza
+	ROUTE Rizeni.pauzaPovolena TO OvladaciPanelKolotoce.pauzaPovolena
+}
+
+#Viewpoint {
+#	position 0 8 7
+#}
+
+NavigationInfo {
+	type ["FLY", "ANY"]
+}
+
+Viewpoint {
+	description	"pred kolotocem"
+	position 0 1.6 12
+}
+
+Inline {url	"../background.wrl"}
+
+Labutovy_kolotoc {
+	texturaPlechu ImageTexture {
+		url	"tex-kov2.jpg"
+		repeatS	TRUE
+		repeatT	TRUE
+	}
+}

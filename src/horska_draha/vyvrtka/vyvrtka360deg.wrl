@@ -1,0 +1,72 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tramP [
+	field MFString texturaTramuKolmeho
+	field SFColor farbaTramuKolmeho
+	exposedField SFInt32 lodTramuKolmeho
+]
+"../tramKolmy.wrl"
+
+EXTERNPROTO	vyvrtka120degP [
+	field MFString texturaTramuVyvrtka120deg
+	field SFColor farbaTramuVyvrtka120deg10m 
+	exposedField SFInt32 lodVyvrtka120deg10m
+]
+"vyvrtka120deg.wrl"
+
+PROTO vyvrtka360degP [
+	field MFString	texturaTramuVyvrtka360deg10m "../textury/palisandr_indicky.jpg"
+	field SFColor farbaTramuVyvrtka360deg10m 0.453 0.367 0.312
+	exposedField SFInt32 loLodVyvrtka360deg10m 0
+]{
+	DEF vyvrtka360deg Group {
+		children [
+			Transform {
+				rotation 0 0 1 2.093
+				translation	0 0 -0.72
+				children [
+					Transform {
+						translation	0 0 -0.36
+						rotation 0 0 1 1.047
+						children
+						DEF	vyvrtka120deg vyvrtka120degP {
+							texturaTramuVyvrtka120deg IS texturaTramuVyvrtka360deg10m
+							farbaTramuVyvrtka120deg10m IS farbaTramuVyvrtka360deg10m
+							lodVyvrtka120deg10m	IS loLodVyvrtka360deg10m
+						}
+					}
+					Transform {
+						translation	0 0 0.36
+						rotation 0 0 1 -1.047
+						children
+						USE vyvrtka120deg
+					}
+					DEF tram Transform {
+						translation	10.1 0 -0.525
+						children
+						tramP {
+							texturaTramuKolmeho	IS texturaTramuVyvrtka360deg10m
+							farbaTramuKolmeho IS farbaTramuVyvrtka360deg10m
+							lodTramuKolmeho	IS loLodVyvrtka360deg10m
+						}
+					}
+				]
+			}
+			Transform {
+				translation	0 0 0.36
+				rotation 0 0 1 -1.047
+				children
+				USE	vyvrtka120deg
+			}
+			Transform {
+				children
+				USE	tram
+			}
+		]
+	}
+}

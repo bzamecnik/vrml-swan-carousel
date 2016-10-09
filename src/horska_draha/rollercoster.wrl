@@ -1,0 +1,295 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+Viewpoint {
+	position 30 0 18
+	orientation	0 0 1 0
+}
+
+EXTERNPROTO	usek36mP [
+	field MFString textura36mTramu
+	field SFColor farba36mTramu
+	exposedField SFInt32 loLodUsek36m
+
+]
+"rovny/rovny36m.wrl"
+
+EXTERNPROTO	usek6mP [
+	field MFString textura6mTramu
+	field SFColor farba6mTramu
+	exposedField SFInt32 loLodUsek6m
+]
+"rovny/rovny6m.wrl"
+
+EXTERNPROTO	usek24mP[
+	field MFString textura24mTramu
+	field SFColor farba24mTramu
+	exposedField SFInt32 loLodUsek24m
+]
+"rovny/rovny24m.wrl"
+
+EXTERNPROTO	usek18mP[
+	field MFString textura18mTramu
+	field SFColor farba18mTramu
+	exposedField SFInt32 loLodUsek18m
+]
+"rovny/rovny18m.wrl"
+
+EXTERNPROTO	stupanie45deg10mP [
+	field MFString texturaBrvnaStupanie45deg10m
+	field SFColor farbaBrvnaStupanie45deg10m
+	exposedField SFInt32 loLodStupanie45deg10m
+]
+"stupanie/stupanie45deg10m.wrl"
+
+EXTERNPROTO	stupanie135deg10mP [
+	field MFString texturaBrvnaStupanie135deg10m
+	field SFColor farbaBrvnaStupanie135deg10m
+	exposedField SFInt32 loLodStupanie135deg10m
+]
+"stupanie/stupanie135deg10m.wrl"
+
+EXTERNPROTO	zakruta180deg10mP [
+	field MFString texturaBrvnaZakruta180deg10m
+	field SFColor farbaBrvnaZakruta180deg10m
+	exposedField SFInt32 loLodZakruta180deg10m
+]
+"zakruta/zakruta180deg10m.wrl"
+
+EXTERNPROTO	spojovaciKusP [
+	field MFString texturaTramuSpojovaciKus
+	field SFColor farbaTramuSpojovaciKus
+	exposedField SFInt32 loLodSpojovaciKus
+]
+"zakruta/spojovaciKus.wrl"
+
+EXTERNPROTO	chicane15double6mP [
+	field MFString texturaTramuChicane15double6m
+	field SFColor farbaTramuChicane15double6m
+	exposedField SFInt32 loLodChicane15double6m
+]
+"zakruta/chicane15double6m.wrl"
+
+EXTERNPROTO	klesanieP [
+	field MFString texturaBrvnaKlesajuciUsek
+	field SFColor farbaBrvnaKlesajuciUsek
+	exposedField SFInt32 loLodKlesajuciUsek
+]
+"klesanie.wrl"
+
+EXTERNPROTO	stupanieP [
+	field MFString texturaBrvnaStupajuciUsek
+	field SFColor farbaBrvnaStupajuciUsek
+	exposedField SFInt32 loLodStupajuciUsek
+]
+"stupanie.wrl"
+
+EXTERNPROTO	vyvrtka360degP [
+	field MFString texturaTramuVyvrtka360deg10m
+	field SFColor farbaTramuVyvrtka360deg10m
+	exposedField SFInt32 loLodVyvrtka360deg10m
+]
+"vyvrtka/vyvrtka360deg.wrl"
+
+PROTO rollercosterP	[
+  field	MFString texturaTramuRollerky "textury/palisandr_indicky.jpg"
+  field	SFColor	farbaTramuRollerky 0.453 0.367	0.312
+  exposedField SFInt32 loLodRoller 0
+]{
+	DEF	rollercoster Transform	{
+		children [
+		
+			Transform {
+				translation	2 0 0
+				children
+				DEF	rovny6m usek6mP	{
+					textura6mTramu IS texturaTramuRollerky
+					loLodUsek6m	IS loLodRoller
+					farba6mTramu IS	farbaTramuRollerky
+				}
+			}
+
+			Transform {
+				translation	4.99 0.025 0.525
+				rotation 0 0 1 -1.57
+				children
+				DEF stupanie45 stupanieP {
+					texturaBrvnaStupajuciUsek IS texturaTramuRollerky
+					farbaBrvnaStupajuciUsek	IS  farbaTramuRollerky
+					loLodStupajuciUsek IS loLodRoller
+				}
+			}
+
+			Transform {
+				translation	12.789 6.954 0
+				rotation 0 0 1 0.785
+				children
+				DEF	rovny36m usek36mP {
+					textura36mTramu	IS texturaTramuRollerky
+					loLodUsek36m	IS loLodRoller
+					farba36mTramu IS farbaTramuRollerky
+				}
+			}
+
+
+			Transform {
+				translation	66.645 6.829 0
+				rotation 0 0 1 1.57
+				children
+				DEF klesanie45 klesanieP {
+					texturaBrvnaKlesajuciUsek IS texturaTramuRollerky
+					farbaBrvnaKlesajuciUsek	IS farbaTramuRollerky
+					loLodKlesajuciUsek IS loLodRoller
+				}
+			}
+
+			Transform {
+				translation	 34.705 26.002 0
+				rotation 0 0 1 0.785	 
+				children
+				DEF klesanie135 Group{
+					children [
+						Transform {			 
+							children
+							USE	klesanie45
+						}
+						Transform{
+							translation	-0.585 -1.4 0
+							rotation 0 0 1 -0.785
+							children
+							USE	klesanie45
+						}
+						Transform {
+							translation	-0.575 1.405 0
+							rotation 0 0 1 0.785
+							children
+							USE klesanie45
+						}
+					]
+				}
+			}
+
+			Transform {
+				translation	35.313 15.61 0
+				rotation 0 0 1 -1.57
+				children
+				DEF	rovny24m usek24mP {
+					textura24mTramu	IS texturaTramuRollerky
+					loLodUsek24m	IS loLodRoller
+					farba24mTramu IS farbaTramuRollerky
+				}
+			}
+
+			Transform {
+				translation	45.374 0.647 0.525
+				rotation 0 0 1 -1.57
+				children
+				DEF	dlheStupanie135 stupanie135deg10mP {
+					texturaBrvnaStupanie135deg10m	IS texturaTramuRollerky
+					farbaBrvnaStupanie135deg10m	IS farbaTramuRollerky
+					loLodStupanie135deg10m IS loLodRoller
+				}
+			}
+
+			Transform {
+				translation	58.85 -0.095 0
+				rotation 0 0 1 0.785
+				children
+				DEF	rovny18m usek18mP {
+					textura18mTramu	IS texturaTramuRollerky
+					loLodUsek18m	IS loLodRoller
+					farba18mTramu IS farbaTramuRollerky
+				}
+			}
+
+			Transform {
+				translation	66.645 6.829 10.95
+				rotation 0 0 1 1.57
+				children
+				USE	klesanie45
+			}
+
+			Transform {
+				translation 66.63 6.804 5.475
+				rotation 0 1 0 -1.57
+				children
+				DEF zakruta180deg10m zakruta180deg10mP {
+					texturaBrvnaZakruta180deg10m IS	texturaTramuRollerky
+					farbaBrvnaZakruta180deg10m IS farbaTramuRollerky
+					loLodZakruta180deg10m IS loLodRoller
+				}
+			}
+
+			Transform {
+				translation	63.093 4.145 10.95
+				rotation 0 0 1 0.785
+				children
+				USE	rovny6m
+			}
+
+			Transform {
+				translation	53.887 9.153 12.915
+				rotation 0 0 1 1.308
+				children
+				DEF	vyvrtka360deg vyvrtka360degP {
+					texturaTramuVyvrtka360deg10m IS texturaTramuRollerky
+					farbaTramuVyvrtka360deg10m IS farbaTramuRollerky
+					loLodVyvrtka360deg10m IS loLodRoller
+				}
+			}
+
+			Transform {
+				translation	-1.005 -0.05 5.476
+				rotation 0 1 0 1.57
+				children
+				USE	zakruta180deg10m
+			}
+			Transform {
+				translation	7.972 -0.342 10.951
+				rotation 0 0 1 -0.038
+				children
+				USE	rovny24m
+			}
+			Transform {
+				translation	53.879 9.145 13.635
+				rotation 0 0 1 -1.57
+				children
+				DEF	stupanie45deg10m stupanie45deg10mP {
+					texturaBrvnaStupanie45deg10m IS texturaTramuRollerky
+					farbaBrvnaStupanie45deg10m IS farbaTramuRollerky
+					loLodStupanie45deg10m IS loLodRoller
+				}
+			}
+			Transform {
+				translation	44.9 -0.905 13.11
+				children
+				USE	rovny18m
+			}
+			Transform {
+				translation	27.274 -0.913 11.915
+				rotation 0 1 0 -0.262
+				children
+				DEF	chicane15double6m chicane15double6mP {
+					texturaTramuChicane15double6m IS texturaTramuRollerky
+					farbaTramuChicane15double6m	IS farbaTramuRollerky
+					loLodChicane15double6m IS loLodRoller
+				}
+
+			}
+			Transform {
+				translation	31.585 -0.962 13.402
+				rotation 0 1 0 -1.57
+				children
+				DEF	spojovaciKus spojovaciKusP {
+					texturaTramuSpojovaciKus IS	texturaTramuRollerky
+					farbaTramuSpojovaciKus IS farbaTramuRollerky
+					loLodSpojovaciKus IS loLodRoller
+				}
+			}
+		]
+	}
+}

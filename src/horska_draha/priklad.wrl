@@ -1,0 +1,35 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	RollerCoster [
+	field SFColor farbaTramuRollerky
+	field MFString texturaTramu
+	field SFColor farbaVlaku
+	field MFString texturaVlaku
+	field SFInt32 lod
+]
+"scene.wrl"
+
+Group {
+	children [
+		Transform {
+			children
+			RollerCoster {
+				lod	0
+			}
+		}
+		Transform {
+			translation	0 0 -20
+			children
+			RollerCoster  {
+				texturaTramu "textury/dub_cerveny.jpg"
+				texturaVlaku "textury/iron_floor.jpg"
+				farbaVlaku 0.589 0.585 0.566
+			}
+		}
+	]	
+}

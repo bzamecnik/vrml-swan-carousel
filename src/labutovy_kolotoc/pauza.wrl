@@ -1,0 +1,91 @@
+#VRML V2.0 utf8
+
+PROTO Pauzovadlo [
+	eventIn SFTime set_pocatek
+	eventIn SFTime set_periodaCasovace
+	eventIn	SFBool zapni
+	eventIn	SFTime prepni
+	eventIn	SFBool set_pauza
+	eventOut SFTime startTime_changed
+	eventOut SFTime stopTime_changed
+	eventOut SFBool zapnuto_changed
+] {
+	Script {
+		field SFTime pocatek 0
+		field SFTime konec 2
+		field SFTime zastaveno 0
+		field SFBool bezi FALSE
+		field SFBool pauza FALSE
+		field SFTime periodaCasovace 0
+		eventIn SFTime set_pocatek IS set_pocatek
+		eventIn SFTime set_periodaCasovace IS set_periodaCasovace
+		eventIn	SFBool zapni IS	zapni
+		eventIn	SFTime prepni IS prepni
+		eventIn	SFBool set_pauza IS	set_pauza
+		eventOut SFTime startTime_changed IS startTime_changed
+		eventOut SFTime stopTime_changed IS	stopTime_changed
+		eventOut SFBool zapnuto_changed IS zapnuto_changed
+		directOutput TRUE
+
+		url	"javascript:
+		function zapni(zapnuto, cas) {
+			if (pauza) { return; }
+			bezi = zapnuto;
+			zapnuto_changed = bezi;
+			if (bezi) {
+				if (pocatek > 0) {
+					pocatek = pocatek + cas - zastaveno;
+					konec = pocatek + periodaCasovace;
+				} else {
+					pocatek = cas;
+					konec = cas + periodaCasovace;
+				}
+				zastaveno = 0;
+				startTime_changed = pocatek;
+				stopTime_changed = konec;
+			} else {
+				zastaveno = cas;
+				stopTime_changed = cas;
+			}
+		}
+		function prepni(cas) {
+			zapni(!bezi, cas);		
+		}
+		function set_pauza(value, cas) {
+			pauza = value;
+			if (!bezi) { return; }		
+			if (pauza) {
+				// pauza
+				zastaveno = cas;
+				stopTime_changed = cas;
+			} else {
+				// obnoveni
+				pocatek = pocatek + cas - zastaveno;
+				konec = konec + cas - zastaveno;
+				startTime_changed = pocatek;
+				stopTime_changed = konec;
+			}
+		}
+		function set_pocatek(value) { pocatek = value; }
+		function set_periodaCasovace(value) { periodaCasovace = value; }
+		"
+	}
+}
+
+# Priklad casovace:
+
+#DEF	Casovac TimeSensor {
+#	startTime -1
+#	cycleInterval 2
+#}
+
+# Priklad zapojeni:
+
+#ROUTE RizeniTlacitkaPauza.pauza_changed TO Pauzovadlo.set_pauza
+#ROUTE TlacitkoZapinani.touchTime TO Pauzovadlo.prepni
+#ROUTE Pauzovadlo.startTime_changed TO Casovac.startTime
+#ROUTE Pauzovadlo.stopTime_changed TO Casovac.stopTime
+
+# Pokud se ma casovac opakovat ve smycce, staci pouze zapnout toto:
+
+#ROUTE Pauzovadlo.zapnuto_changed TO Casovac.loop

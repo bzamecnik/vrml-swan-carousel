@@ -1,0 +1,56 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tramP [
+	field MFString texturaTramuKolmeho
+	field SFColor farbaTramuKolmeho
+	exposedField SFInt32 lodTramuKolmeho
+]
+"../tramKolmy.wrl"
+
+EXTERNPROTO	vyvrtka30degP [
+	field MFString texturaTramuVyvrtka30deg
+	field SFColor farbaTramuVyvrtka30deg10m
+	exposedField SFInt32 lodVyvrtka30deg10m
+]
+"vyvrtka30deg.wrl"
+
+PROTO vyvrtka60degP [
+	field MFString	texturaTramuVyvrtka60deg"../textury/palisandr_indicky.jpg"
+	field SFColor farbaTramuVyvrtka60deg10m 0.453 0.367 0.312
+	exposedField SFInt32 lodVyvrtka60deg10m 0
+]{
+	DEF vyvrtka60deg Group{
+		children [
+			Transform {
+				translation	0 0 -0.09
+				rotation 0 0 1 0.262
+				children
+				DEF	vyvrtka30deg vyvrtka30degP {
+					texturaTramuVyvrtka30deg IS texturaTramuVyvrtka60deg
+					farbaTramuVyvrtka30deg10m IS farbaTramuVyvrtka60deg10m
+					lodVyvrtka30deg10m IS lodVyvrtka60deg10m
+				}
+			}
+			Transform {
+				translation	0 0 0.09
+				rotation 0 0 1 -0.262
+				children
+				USE vyvrtka30deg
+			}
+			Transform {
+				translation	10.1 0 -0.525
+				children
+				tramP {
+					texturaTramuKolmeho	IS texturaTramuVyvrtka60deg
+					farbaTramuKolmeho IS farbaTramuVyvrtka60deg10m
+					lodTramuKolmeho	IS lodVyvrtka60deg10m
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,203 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 5.11.2009"]
+	title "Labuti kolotoc - podstava"
+}
+
+EXTERNPROTO	Schodiste [
+	field SFNode materialSchodu
+	field SFNode materialNosniku
+	field SFNode texturaSchodu
+] "schody.wrl#Schodiste"
+
+EXTERNPROTO	Tycka [
+	field SFNode material
+	field SFBool konce
+] "schody.wrl#Tycka"
+
+PROTO Nastupiste [
+	field SFNode materialPlechu NULL
+	field SFNode texturaPlechu NULL
+]
+{
+	Shape {
+		geometry Cylinder {
+			radius 7
+			height 1
+			side FALSE
+			bottom FALSE
+		}
+		appearance Appearance {
+			material IS	materialPlechu
+			texture	IS texturaPlechu
+			textureTransform TextureTransform {
+				scale 40 40
+			}
+			
+		}
+	}
+}
+
+PROTO Vsechna_schodiste [
+	field SFNode barevnyMaterial NULL
+	field SFNode texturaPlechu NULL
+	field SFNode materialPlechu NULL
+]
+{
+	Group {
+		children [
+			DEF Jedno_schodiste Transform {
+				translation	0 -0.525 7
+				children
+				Schodiste {
+					materialSchodu IS materialPlechu
+					materialNosniku IS barevnyMaterial
+					texturaSchodu IS texturaPlechu
+				}
+			}
+			Transform {
+				rotation 0 1 0 1.570796
+				children USE Jedno_schodiste
+			}
+			Transform {
+				rotation 0 1 0 3.141593
+				children USE Jedno_schodiste
+			}
+			Transform {
+				rotation 0 1 0 4.712389
+				children USE Jedno_schodiste
+			}
+		]
+	}
+}
+
+PROTO Podstava_proto [
+	field SFNode barevnyMaterial NULL
+	field SFNode texturaPlechu NULL
+	field SFNode materialPlechu NULL
+]
+{
+	Group {
+		children [
+			# Nastupiste - vrsek
+			Nastupiste {
+				materialPlechu IS materialPlechu
+				texturaPlechu IS texturaPlechu
+			}
+			# Nastupiste - bok
+			DEF Bok_nastupiste Shape {
+				geometry Cylinder {
+					radius 7
+					height 1
+					top	FALSE
+					bottom FALSE
+				}
+				appearance Appearance {
+					material IS barevnyMaterial
+				}
+			}
+			Vsechna_schodiste {
+				barevnyMaterial IS barevnyMaterial
+				texturaPlechu IS texturaPlechu
+				materialPlechu IS materialPlechu
+			}
+			# zabradli kolem nastupiste	- jeden kvadrant
+			DEF Zabradli Group {
+				children [
+					DEF Jedno_zabradli Group {
+						children [
+							Transform {
+								rotation 0 1 0 .1963
+								children
+								DEF Tycka_na_kraji Transform {
+									translation	0 0.5 6.8
+									children 
+									LOD {
+    									range [20 50]
+										level [
+											# level 0
+											DEF Tycka_na_kraji_LOD0 Group {
+												children [
+													DEF Tycka Tycka {
+														material IS	barevnyMaterial
+														konce TRUE
+
+													}
+													DEF Drzadlo Transform {
+														rotation 0 0 1 1.5708
+														scale 1 0.46 1
+														translation	0.23 1.02 0
+														children
+														USE	Tycka
+													}
+												]
+											}
+											# level 1
+											USE	Drzadlo
+											# level 2
+											Group {}
+										]
+									}
+								}
+							}
+							Transform { rotation 0 1 0 .2617 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .3272 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .3926 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .4580 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .5235 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .5889 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .6544 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .7198 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .7853 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .8507 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .9161 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 .9816 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.0470 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.1125 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.1779 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.2433 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.3088 children USE Tycka_na_kraji }
+							Transform { rotation 0 1 0 1.3742 children USE Tycka_na_kraji }
+						]
+					}
+				]
+			}
+			# dalsi kvadranty
+			Transform { rotation 0 1 0 1.5708 children USE Jedno_zabradli }
+			Transform { rotation 0 1 0 3.1416 children USE Jedno_zabradli }
+			Transform { rotation 0 1 0 4.7124 children USE Jedno_zabradli }
+		]
+	}
+}
+
+PROTO Podstava [
+	field SFNode barevnyMaterial NULL
+	field SFNode texturaPlechu NULL
+	field SFNode materialPlechu Material {
+		diffuseColor .4 .4 .4
+		specularColor .4 .4 .4
+		ambientIntensity .137
+		shininess .161
+	}
+]
+{
+	LOD {
+		range [ 20 50 ]
+		level [
+			# level 0
+			DEF Podstava_LOD0 Podstava_proto {
+				barevnyMaterial	IS barevnyMaterial
+				texturaPlechu IS texturaPlechu
+				materialPlechu IS materialPlechu
+			}
+			# level 1 - bez textur
+			Podstava_proto {
+				barevnyMaterial	IS barevnyMaterial
+				materialPlechu IS materialPlechu
+			}
+		]
+	}
+}
+
+Podstava {}

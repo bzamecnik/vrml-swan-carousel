@@ -1,0 +1,216 @@
+#VRML V2.0 utf8
+
+DEF navigacia NavigationInfo {
+	headlight FALSE
+}
+
+PROTO cudlik [
+	eventIn	SFBool set_aktivovane
+	eventOut SFBool aktivovane_changed
+	eventOut SFTime	aktivovaneTime_changed
+]{
+	Group {
+		children [
+			DEF tlacitko Transform {
+				scale 1 1 1
+				translation	0 0 0.5
+				rotation 0 0 1 0.785
+				children
+				Shape {
+					geometry Box {
+						size 1 1 0.5
+					}
+					appearance Appearance {
+						material Material {
+							diffuseColor .11 .55 .09
+							specularColor .12 .06 .06
+							ambientIntensity 1
+							shininess .09
+							emissiveColor .11 .55 .09
+						}
+			
+					}
+				}
+			}
+			DEF tlacitkoPI PositionInterpolator	{
+				key	[0,1]
+				keyValue [0 0 0.5,0 0 0.01]
+			}
+			DEF	tlacitkoTS TouchSensor {
+			}
+			DEF	tlacitkoTimeSenz TimeSensor	{
+				loop FALSE
+				cycleInterval 0.5
+			}
+		]
+	}
+	DEF	obsluhaAktivacie Script	{
+		field SFBool stav FALSE
+		eventIn	SFBool set_aktivovane IS set_aktivovane
+		eventOut SFBool	aktivovane_changed IS aktivovane_changed
+		eventOut SFTime aktivovaneTime_changed IS aktivovaneTime_changed
+		eventIn	SFFloat	set_fraction
+		eventOut SFFloat fraction_changed
+		url "javascript:
+		function set_aktivovane(value,cas){
+			if(value){
+				stav = stav ? FALSE : TRUE;
+				aktivovane_changed = stav;
+				aktivovaneTime_changed = cas;
+			}
+		}
+		function set_fraction(value){
+			if(stav)
+			fraction_changed = value
+			else
+			fraction_changed = 1-value
+		}
+		"
+	}
+	ROUTE tlacitkoTS.isActive TO obsluhaAktivacie.set_aktivovane
+	ROUTE tlacitkoTS.touchTime TO tlacitkoTimeSenz.startTime
+	ROUTE tlacitkoTimeSenz.fraction_changed	TO obsluhaAktivacie.set_fraction
+	ROUTE obsluhaAktivacie.fraction_changed	TO tlacitkoPI.set_fraction
+	ROUTE tlacitkoPI.value_changed TO tlacitko.translation
+}
+
+PROTO box
+[
+]{
+	Group {
+		children [
+			Transform {
+				children[
+					Transform {
+						translation	0 -4 0
+						children
+						Shape {
+							geometry Box {
+								size 0.25 4 0.25
+							}
+							appearance Appearance {
+								material Material {
+									diffuseColor .54 0 0
+									specularColor .59 0 .13
+									ambientIntensity .0467
+									shininess .06
+									emissiveColor 1 0 0
+								}
+							}
+						}
+					}
+					Transform {
+						scale 2 2 0.5
+						children
+						Shape {
+							geometry Box {
+								size 2 2 0.5
+							}
+							appearance Appearance {
+								material Material {
+									diffuseColor .54 0 0
+									specularColor .59 0 .13
+									ambientIntensity .0467
+									shininess .06
+									emissiveColor 1 0 0
+								}
+							}
+						}
+					}
+					DEF krabicka Transform {
+						scale 2 2 1
+						children
+						Shape {
+							geometry Box {
+								size 2 2 0.5
+							}
+							appearance Appearance {
+								material DEF farbaKrabicky Material {
+									diffuseColor 1 1 1
+									specularColor .59 0 .13
+									ambientIntensity .0467
+									shininess .06
+								}
+							}
+						}
+					}
+					Transform {
+						translation	0 0 2
+						children
+						DEF svetlo PointLight {
+							color 1 1 1
+							intensity 1
+							radius 10
+						}
+					}
+					DEF CasovacUputavky TimeSensor {
+						cycleInterval 3
+						loop TRUE
+					}
+					DEF IFarby ColorInterpolator {
+						key	[0,0.5,1]
+						keyValue [0.1 0.4 1,1 0.6 0.1,0.1,0.4,1]
+					}
+					DEF	ISkalaru ScalarInterpolator	{
+						key	[0,0.5,1]
+						keyValue [0.5,2,0.5]
+					}
+
+					DEF	obsluhaSvetla Script {
+						field SFBool stavSvetla TRUE
+						field SFNode svetlo USE	svetlo
+						eventIn	SFTime zmena
+						eventIn	SFFloat	jas
+						directOutput TRUE
+						url "javascript:
+						function zmena(){
+							stavSvetla = stavSvetla ? FALSE : TRUE
+						}
+						function jas(value){
+							if(stavSvetla){
+								svetlo.intensity = 1-value   
+							}
+							else
+								svetlo.intensity = value
+						}
+						"
+					}
+					DEF	obsluhaZmenyVelkosti Script	{
+						field SFBool rastie FALSE
+						field SFNode krabicka USE krabicka
+						eventIn	SFTime zmena
+						eventIn	SFFloat	velkost
+						directOutput TRUE
+						url	"javascript:
+						function zmena(){
+							rastie = rastie ? FALSE : TRUE
+						}
+						function velkost(value){
+							if(rastie){
+								krabicka.scale[0] = krabicka.scale[1] = 1+value
+							}
+							else
+								krabicka.scale[0] = krabicka.scale[1] = 2-value
+						}
+						"
+					}
+				]
+				ROUTE CasovacUputavky.fraction_changed TO IFarby.set_fraction
+				ROUTE IFarby.value_changed TO farbaKrabicky.diffuseColor
+				ROUTE CasovacUputavky.cycleTime	TO obsluhaSvetla.zmena
+				ROUTE CasovacUputavky.fraction_changed TO obsluhaSvetla.jas
+				ROUTE CasovacUputavky.cycleTime TO obsluhaZmenyVelkosti.zmena
+				ROUTE CasovacUputavky.fraction_changed TO obsluhaZmenyVelkosti.velkost
+			}
+		]
+	}
+}
+
+DEF	MainSwitch box {
+
+}
+DEF	MainButton cudlik {
+
+}
+
+ROUTE MainButton.aktivovane_changed	TO navigacia.headlight

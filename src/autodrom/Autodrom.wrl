@@ -1,0 +1,696 @@
+#VRML V2.0 utf8
+
+WorldInfo
+{
+ title	"autodrom"
+ info	["Author: Ivan Jankoviè", "Date: 31.10.2009"]
+}
+
+
+EXTERNPROTO	bumperCar [
+	 field SFInt32 lod 
+	 field SFNode texture
+] "bumperCar.wrl#bumperCar"
+
+EXTERNPROTO	button [
+	eventIn	SFBool set_activated
+	eventOut SFBool activated_changed
+	eventOut SFTime	activatedTime_changed
+]
+"activationPanel.wrl#button"
+
+EXTERNPROTO	box [
+]
+"activationPanel.wrl#box"
+
+
+#PROTO pillar [] {
+     
+#}
+
+
+PROTO autodromNoCars [
+   eventIn SFBool control_lights
+   eventIn SFBool set_active
+   field SFInt32 lod 1
+   field SFColor color 1 1 1
+   field SFColor lightColor 1 1 1
+] {
+
+  Switch { whichChoice IS lod
+choice [
+DEF	NOLOD Group {
+		children [
+DEF BOTTOM Shape {
+	geometry Box {size 30 .25 15}
+	appearance DEF DOMINANT_COLOR Appearance {
+		material Material {
+			diffuseColor IS	color
+			specularColor .49 .49 .49
+			emissiveColor .27 .3 .3
+			ambientIntensity .153
+			shininess 1
+		}	 
+	}	
+}
+
+Transform {	translation	0 .25 0
+	children
+DEF LAYER Shape {
+	geometry Box {size 29 .25 14}
+	appearance Appearance {
+		material Material {
+			diffuseColor .6 .35 0
+			specularColor .5 .3 0
+			emissiveColor .3 .18 0
+			ambientIntensity 0
+			shininess .15
+		}
+	}
+}
+}
+
+Transform { translation	0 .5 6
+	children
+DEF HORIZONTAL_EDGE Shape {
+	geometry Box {size 28 .25 1}
+	appearance DEF EDGE_COLOR Appearance {
+		material Material {
+			diffuseColor .68 .68 .43
+			specularColor .5 .5 .31
+			emissiveColor .3 .3 .19
+			ambientIntensity 0
+			shininess .14
+		}
+	}
+}
+}
+
+
+  
+Transform  { translation 0 .5 -6
+	children
+	USE	HORIZONTAL_EDGE
+}
+
+
+
+
+
+
+
+
+
+
+
+Transform { translation	13.5 .5 0
+	children
+DEF	VERTICAL_EDGE Shape	{
+	geometry Box {size 1 .25 11}
+	appearance USE EDGE_COLOR
+}
+}
+
+
+
+
+Transform { translation	-13.5 .5 0
+	children
+	USE	VERTICAL_EDGE
+}
+
+
+DEF PILLARS Group {
+	children [
+
+DEF	SENSOR1 CylinderSensor {}
+		  
+DEF PILLAR1 Transform { translation	13.5 2 6
+	children
+	DEF	PILLAR Shape {
+	#geometry Cylinder {top FALSE bottom FALSE radius .3 height 3}
+	geometry Box {
+		size .43 3 .3
+	}
+	appearance USE DOMINANT_COLOR
+		
+	}
+}
+
+DEF PILLAR2 Transform { translation	-13.5 2 6
+	children USE PILLAR
+}
+
+DEF PILLAR3 Transform { translation	-13.5 2 -6
+	children USE PILLAR
+}
+
+DEF PILLAR4 Transform { translation	13.5 2 -6
+	children USE PILLAR
+}
+
+DEF PILLAR5 Transform { translation	0 2 -6
+	children USE PILLAR
+}
+
+DEF PILLAR6 Transform { translation	0 2 6
+	children USE PILLAR
+}
+]
+} #end of PILLARS group
+
+DEF COVER Transform { translation	0 3.6 0
+	children USE LAYER
+}
+
+
+Transform {
+	translation	1 1.2 6.7
+	scale 0.15 0.15 0.15
+	children[
+		DEF mainSwitch button {
+		}
+		box	{
+		}
+	]
+}
+
+DEF loopTimer TimeSensor {
+				cycleInterval 1
+				loop TRUE  
+				enabled	FALSE
+			}
+
+DEF radiusInterpolator PositionInterpolator {
+				key	[0 0.5 1]
+				keyValue [1 1 1, 1.5 1 1.5, 1 1 1]
+			}
+
+DEF Light_1 PointLight {
+	location 0 2 0
+	radius 20
+	intensity 1.7
+	color IS lightColor
+	on FALSE
+}
+
+DEF Autodrom_proximity ProximitySensor {
+	enabled	TRUE
+	center	0 0 0
+	size 50 10 30
+}
+] #end of children
+
+} #end of largest group
+
+LOD	{
+	range	[40 80]
+	level [
+		USE	NOLOD
+		USE	NOLOD
+		DEF AUTODROM_FAR Group {
+			children [
+			   USE LAYER
+			   USE PILLARS
+			   USE COVER
+			]
+		}
+	
+	]
+}
+
+
+]
+} #end of switch
+
+DEF	Control Script {
+	eventIn	SFBool lightsOn IS control_lights
+	eventOut SFBool	lightsOn_changed
+	eventIn	SFBool set_active IS set_active
+	eventOut SFBool	set_active_changed
+	url "javascript:
+//		function initialize() {
+//			// kliknuti, autor: Bohumir Zamecnik
+//			Tlacitko_klik.url = new MFString(dirPrefix + '/klik.wav');
+//		}
+		function set_active(value) {
+			set_active_changed = value;
+		}
+//		function jePauzaExterni(value) {
+//			pauzaPovolena = !value;
+//			jePauzaExterni_changed = value;
+//			jePauza(value);
+//		}
+//		function jePauzaInterni(value) {
+//			jePauza(value);
+//		}
+		function lightsOn(value) {
+			lightsOn_changed = value;
+		}
+		"
+}
+
+ROUTE Autodrom_proximity.isActive TO Light_1.on
+ROUTE SENSOR1.rotation_changed TO PILLAR1.rotation
+ROUTE SENSOR1.rotation_changed TO PILLAR2.rotation
+ROUTE SENSOR1.rotation_changed TO PILLAR3.rotation
+ROUTE SENSOR1.rotation_changed TO PILLAR4.rotation
+ROUTE SENSOR1.rotation_changed TO PILLAR5.rotation
+ROUTE SENSOR1.rotation_changed TO PILLAR6.rotation
+ROUTE mainSwitch.activated_changed TO loopTimer.enabled
+ROUTE mainSwitch.activated_changed TO Light_1.on
+ROUTE loopTimer.fraction_changed TO radiusInterpolator.set_fraction
+ROUTE radiusInterpolator.value_changed TO PILLAR1.set_scale
+ROUTE radiusInterpolator.value_changed TO PILLAR2.set_scale
+ROUTE radiusInterpolator.value_changed TO PILLAR3.set_scale
+ROUTE radiusInterpolator.value_changed TO PILLAR4.set_scale
+ROUTE radiusInterpolator.value_changed TO PILLAR5.set_scale
+ROUTE radiusInterpolator.value_changed TO PILLAR6.set_scale
+ROUTE Control.lightsOn_changed TO Light_1.on
+ROUTE Control.set_active_changed TO	mainSwitch.set_activated
+} #end of autodromNoCars 
+
+
+
+
+PROTO fiveCars [
+	field SFInt32 lod 1
+	field SFNode texture NULL
+]{
+	Group {
+		children [
+
+			
+DEF TURNAROUND1 Transform {
+   translation 11.5 .45 0
+   rotation	0 1 0 -1.57
+   children [
+      DEF BUMPER_CAR bumperCar	{lod IS lod texture IS texture }
+	  DEF	TOUCH1 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO1 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+	  
+     ]
+}
+	 
+
+
+
+DEF TURNAROUND2 Transform {
+   translation 11.5 .45 4
+   rotation	0 1 0 -1.57
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH2 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO2 AudioClip {
+			url	["autodrom/earlycarengine.wav", "earlycarengine.wav"]
+		}
+	  }
+     ]
+}
+ 
+
+
+
+DEF TURNAROUND3 Transform {
+   translation 5 .45 2
+   rotation	0 1 0 2.28
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH3 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO3 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND4 Transform {
+   translation -11.5 .45 3
+   rotation	0 1 0 .81
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH4 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO4 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND5 Transform {
+   translation -7 .45 -2.8
+   rotation	0 1 0 .81
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH5 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO5 AudioClip {
+			url	["autodrom/earlycarengine.wav", "earlycarengine.wav"]
+		}
+	  }
+     ]
+}
+
+]
+}
+
+DEF	TIMER1 TimeSensor {cycleInterval 5}
+DEF	TIMER2 TimeSensor {cycleInterval 5}
+DEF	TIMER3 TimeSensor {cycleInterval 5}
+DEF	TIMER4 TimeSensor {cycleInterval 5}
+DEF	TIMER5 TimeSensor {cycleInterval 5}
+
+DEF	ENGINE1 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 -1.57, 0 1 0 0 0 1 0 1.57, 0 1 0 3.14,
+			0 1 0 -1.57]	
+}
+DEF	ENGINE2 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 -1.57, 0 1 0 0 0 1 0 1.57, 0 1 0 3.14,
+			0 1 0 -1.57]	
+}
+
+DEF	ENGINE3 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 2.28, 0 1 0 0.71 0 1 0 -0.86, 0 1 0 -2.43,
+			0 1 0 2.28]	
+}
+
+DEF	ENGINE4 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 0.81, 0 1 0 -0.76 0 1 0 -2.33, 0 1 0 2.38,
+			0 1 0 0.81]	
+}
+
+DEF	ENGINE5 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 0.81, 0 1 0 -0.76 0 1 0 -2.33, 0 1 0 2.38,
+			0 1 0 0.81]	
+}
+	
+
+	ROUTE	TOUCH1.touchTime	TO TIMER1.startTime
+	ROUTE	TOUCH2.touchTime	TO TIMER2.startTime
+	ROUTE	TOUCH3.touchTime	TO TIMER3.startTime
+	ROUTE	TOUCH4.touchTime	TO TIMER4.startTime
+	ROUTE	TOUCH5.touchTime	TO TIMER5.startTime
+	ROUTE	TIMER1.fraction_changed TO	ENGINE1.set_fraction
+	ROUTE	TIMER2.fraction_changed TO	ENGINE2.set_fraction
+	ROUTE	TIMER3.fraction_changed TO	ENGINE3.set_fraction
+	ROUTE	TIMER4.fraction_changed TO	ENGINE4.set_fraction
+	ROUTE	TIMER5.fraction_changed TO	ENGINE5.set_fraction
+	ROUTE	ENGINE1.value_changed TO	TURNAROUND1.rotation
+	ROUTE	ENGINE2.value_changed TO	TURNAROUND2.rotation
+	ROUTE	ENGINE3.value_changed TO	TURNAROUND3.rotation
+	ROUTE	ENGINE4.value_changed TO	TURNAROUND4.rotation
+	ROUTE	ENGINE5.value_changed TO	TURNAROUND5.rotation
+	ROUTE	TOUCH1.touchTime TO	AUDIO1.startTime
+	ROUTE	TOUCH2.touchTime TO	AUDIO2.startTime
+	ROUTE	TOUCH3.touchTime TO	AUDIO3.startTime
+	ROUTE	TOUCH4.touchTime TO	AUDIO4.startTime
+	ROUTE	TOUCH5.touchTime TO	AUDIO5.startTime
+}
+
+
+PROTO sevenCars [
+	field SFInt32 lod 1
+	field SFNode texture NULL
+]{
+	Group {
+		children [
+
+
+DEF TURNAROUND1 Transform {
+   translation -11.5 .45 3
+   rotation	0 1 0 -1.57
+   children [
+      DEF BUMPER_CAR bumperCar	{lod IS lod texture IS texture }
+	  DEF	TOUCH1 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO1 AudioClip {
+			url	["autodrom/earlycarengine.wav", "earlycarengine.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND2 Transform {
+   translation -6.5 .45 4.5
+   rotation	0 1 0 0.37
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH2 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO2 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+
+
+DEF TURNAROUND3 Transform {
+   translation 6.5 .45 -2
+   rotation	0 1 0 2.28
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH3 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO3 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+
+DEF TURNAROUND4 Transform {
+   translation 0 .45 1
+   rotation	0 1 0 1.2
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH4 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO4 AudioClip {
+			url	["autodrom/earlycarengine.wav", "earlycarengine.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND5 Transform {
+   translation 10.5 .45 -3
+   rotation	0 1 0 -1.57
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH5 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO5 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND6 Transform {
+   translation -8.5 .45 -2
+   rotation	0 1 0 2.7
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH6 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO6 AudioClip {
+			url	["autodrom/earlycarengine.wav", "earlycarengine.wav"]
+		}
+	  }
+     ]
+}
+
+DEF TURNAROUND7 Transform {
+   translation 1 .45 -3.5
+   rotation	0 1 0 2
+   children [
+      USE BUMPER_CAR
+	  DEF	TOUCH7 TouchSensor {}
+	  Sound {
+		minFront 10
+		maxFront 20
+		minBack 10
+		maxBack 20
+		source DEF AUDIO7 AudioClip {
+			url	["autodrom/harley.wav", "harley.wav"]
+		}
+	  }
+     ]
+}
+
+]
+}
+
+DEF	TIMER1 TimeSensor {cycleInterval 5}
+DEF	TIMER2 TimeSensor {cycleInterval 5}
+DEF	TIMER3 TimeSensor {cycleInterval 5}
+DEF	TIMER4 TimeSensor {cycleInterval 5}
+DEF	TIMER5 TimeSensor {cycleInterval 5}
+DEF	TIMER6 TimeSensor {cycleInterval 5}
+DEF	TIMER7 TimeSensor {cycleInterval 5}
+
+DEF	ENGINE1 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 -1.57, 0 1 0 0 0 1 0 1.57, 0 1 0 3.14,
+			0 1 0 -1.57]	
+}
+DEF	ENGINE2 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 0.37, 0 1 0 1.94 0 1 0 -2.77, 0 1 0 -1.2,
+			0 1 0 0.37]	
+}
+
+DEF	ENGINE3 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 2.28, 0 1 0 0.71 0 1 0 -0.86, 0 1 0 -2.43,
+			0 1 0 2.28]	
+}
+
+DEF	ENGINE4 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 1.2, 0 1 0 2.77 0 1 0 -1.94, 0 1 0 -0.37,
+			0 1 0 1.2]	
+}
+
+DEF	ENGINE5 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 -1.57, 0 1 0 0 0 1 0 1.57, 0 1 0 3.14,
+			0 1 0 -1.57]	
+}
+
+DEF	ENGINE6 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 2.7, 0 1 0 1.13 0 1 0 -0.44, 0 1 0 -2.01,
+			0 1 0 2.7]	
+}
+
+DEF	ENGINE7 OrientationInterpolator {
+		key	[0 .25 .5 .75 1]
+		keyValue [0 1 0 2, 0 1 0 0.43 0 1 0 -1.14, 0 1 0 -2.71,
+			0 1 0 2]	
+}
+
+
+ROUTE	TOUCH1.touchTime	TO TIMER1.startTime
+	ROUTE	TOUCH2.touchTime	TO TIMER2.startTime
+	ROUTE	TOUCH3.touchTime	TO TIMER3.startTime
+	ROUTE	TOUCH4.touchTime	TO TIMER4.startTime
+	ROUTE	TOUCH5.touchTime	TO TIMER5.startTime
+	ROUTE	TOUCH6.touchTime	TO TIMER6.startTime
+	ROUTE	TOUCH7.touchTime	TO TIMER7.startTime
+	ROUTE	TIMER1.fraction_changed TO	ENGINE1.set_fraction
+	ROUTE	TIMER2.fraction_changed TO	ENGINE2.set_fraction
+	ROUTE	TIMER3.fraction_changed TO	ENGINE3.set_fraction
+	ROUTE	TIMER4.fraction_changed TO	ENGINE4.set_fraction
+	ROUTE	TIMER5.fraction_changed TO	ENGINE5.set_fraction
+	ROUTE	TIMER6.fraction_changed TO	ENGINE6.set_fraction
+	ROUTE	TIMER7.fraction_changed TO	ENGINE7.set_fraction
+	ROUTE	ENGINE1.value_changed TO	TURNAROUND1.rotation
+	ROUTE	ENGINE2.value_changed TO	TURNAROUND2.rotation
+	ROUTE	ENGINE3.value_changed TO	TURNAROUND3.rotation
+	ROUTE	ENGINE4.value_changed TO	TURNAROUND4.rotation
+	ROUTE	ENGINE5.value_changed TO	TURNAROUND5.rotation
+	ROUTE	ENGINE6.value_changed TO	TURNAROUND6.rotation
+	ROUTE	ENGINE7.value_changed TO	TURNAROUND7.rotation
+	ROUTE	TOUCH1.touchTime TO	AUDIO1.startTime
+	ROUTE	TOUCH2.touchTime TO	AUDIO2.startTime
+	ROUTE	TOUCH3.touchTime TO	AUDIO3.startTime
+	ROUTE	TOUCH4.touchTime TO	AUDIO4.startTime
+	ROUTE	TOUCH5.touchTime TO	AUDIO5.startTime
+	ROUTE	TOUCH6.touchTime TO	AUDIO6.startTime
+	ROUTE	TOUCH7.touchTime TO	AUDIO7.startTime
+
+}
+
+
+PROTO autodrom [
+	eventIn	SFBool control_lights
+	eventIn	SFBool set_active
+	field SFInt32 lod 1
+    field SFColor color 1 1 1
+	field SFColor lightColor 1 1 1
+	field SFNode texture NULL
+	field SFInt32 layoutChoice 0  # [0-1] choice of car layout 
+								  #in the autodrome. Currently, there are
+	#two layouts - fiveCars and sevenCars. Additional layouts can be added
+	#manually as prototypes, and inserted in the Switch below.
+] {
+
+	Group {
+		children [
+			autodromNoCars {lod IS lod color IS color lightColor IS lightColor control_lights IS control_lights set_active IS set_active }
+
+			Switch { whichChoice IS layoutChoice  
+				choice	[
+				   		
+					fiveCars {lod IS lod texture IS texture}
+			
+					sevenCars {lod IS lod texture IS texture}
+
+					#insert new layouts here
+				] 
+			}
+		]
+	}
+}
+
+autodrom {}

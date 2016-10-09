@@ -1,0 +1,101 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tramP [
+	field MFString texturaBrvna
+	field SFColor farbaBrvna
+	exposedField SFInt32 lod
+]
+"tram.wrl"
+
+PROTO stupajuciUsekP [
+	field MFString texturaBrvnaStupajuciUsek "textury/palisandr_indicky.jpg"
+	field SFColor farbaBrvnaStupajuciUsek 0.453 0.367 0.312
+	exposedField SFInt32 loLodStupajuciUsek 0
+]{
+	DEF stupajuciUsek Transform {
+		scale 0.001 0.001 0.001
+		children [
+			Transform{
+				scale 2 2 2
+				children
+				DEF klesajucaKolaj
+				Shape {
+					geometry Extrusion {
+						crossSection [0 0, 50 0, 50 -25,0 -25, 0 0]
+						spine [-12.5 0 0,-17.5 100 0,-34 200 0,-60 300 0,-99 400 0,-150 500 0,-217.5 600 0,-302.5 700 0]
+						endCap FALSE
+						beginCap FALSE
+					}
+					appearance DEF zelezo Appearance {
+						material Material {
+							diffuseColor .15 .15 .15
+							specularColor .92 .91 .89
+							ambientIntensity 0
+							shininess .06
+						}
+					}
+				}
+			}
+			Transform {
+				scale 2 2 2
+				translation	0 0 -1000
+				children
+				USE	klesajucaKolaj
+			}
+			DEF tram Transform {
+				scale 1000 1000 1000
+				translation	56 370 -525
+				rotation 0 0 1 1.75
+				children
+				tramP {
+						texturaBrvna IS	texturaBrvnaStupajuciUsek
+						farbaBrvna IS farbaBrvnaStupajuciUsek
+						lod	IS loLodStupajuciUsek
+					}
+			}
+			Transform{
+				translation	-180 800 0
+				rotation 0 0 1 0.375
+				children
+				USE	tram
+			}
+			Transform{
+				translation	 -50 400 0
+				rotation 0 0 1 0.17
+				children
+				USE	tram
+			}
+		]
+	}
+}
+
+Group {
+	children[
+	stupajuciUsekP {
+
+	}
+	DEF tyc Shape {
+		geometry Box {
+			size 0.01 2 0.01
+		}
+		appearance Appearance {
+			material Material {
+				diffuseColor .79 .25 0
+				specularColor .63 .19 .03
+				ambientIntensity .0867
+				shininess .55
+			}
+		}
+	}
+	Transform {
+		rotation 0 0 1 1.57
+		children
+		USE	tyc
+	}
+]
+}

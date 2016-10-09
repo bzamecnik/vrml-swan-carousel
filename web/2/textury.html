@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta name="http-equiv" content="content-type: text/html; charset=cp1250">
+    <title>Virtuální realita - úlohy</title>
+    <style>
+      body {
+				margin: 0 10%;
+				padding: 1em 2em;
+				background-color: #EEA;
+				border: 10px solid #E90;
+				border-top-width: 2em;
+				border-bottom-width: 2em;
+				font-family: sans-serif; 
+			}
+			a {
+				color: #C60;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			table,th,td {
+				border: 1px #000 solid
+			}
+    </style>
+  </head>
+  <body>
+    <h1>Virtuální realita - úlohy</h1>
+    <h2>Úloha č. 2 - Svět s detaily</h2>
+    <h3>Přehled textur a výpočet texturovací paměti</h3>
+    
+    <p>Textura vyžaduje paměť pro čtvecový rastr o straně velikosti mocniny dvojky. Tedy pro texturu velikosti obecného obdélníka musíme počítat se minimálním čtvercem o straně velikosti 2<sup>N</sup>, který pojme daný obdélník.</p>
+
+		<table width="100%" cellspacing="0">
+		  <tr><th>Náhled</th><th>Název</th><th>Rozměry (px<sup>2</sup>)</th><th>Potřebné místo (px<sup>2</sup>)</th><th>Počet kanálů</th><th>Potřebná texturovací paměť</th></tr>
+		  <tr><th colspan="6">Autodrom</th></tr>
+		  <tr>
+				<td><img src="textury/tex-autodrom-1.jpg" alt="tex-autodrom-1" border="0"></td>
+				<td>texture1.jpg</td>
+				<td>90x90</td>
+				<td>128x128</td>
+				<td>3</td>
+				<td>49152 B = 48 kB</td>
+			</tr>
+			<tr>
+				<td><img src="textury/tex-autodrom-2.jpg" alt="tex-autodrom-2" border="0"></td>
+				<td>texture2.jpg</td>
+				<td>100x100</td>
+				<td>128x128</td>
+				<td>3</td>
+				<td>49152 B = 48 kB</td>
+			</tr>
+			<tr><td colspan="5">Celkem použito:</td><td>98304 B = 96 kB</td></tr>
+		  <tr><th colspan="6">Horská dráha</th></tr>
+		  <tr>
+				<td><img src="textury/tex-horska_draha-1.jpg" alt="tex-horska_draha-1" border="0"></td>
+				<td>palisandr_indicky.jpg</td>
+				<td>104x104</td>
+				<td>128x128</td>
+				<td>3</td>
+				<td>49152 B = 48 kB</td>
+			</tr>
+			<tr>
+				<td><img src="textury/tex-horska_draha-2.jpg" alt="tex-horska_draha-2" border="0"></td>
+				<td>dub_cerveny.jpg</td>
+				<td>104x104</td>
+				<td>128x128</td>
+				<td>3</td>
+				<td>49152 B = 48 kB</td>
+			</tr>
+			<tr>
+				<td><img src="textury/tex-horska_draha-3.jpg" alt="tex-horska_draha-3" border="0"></td>
+				<td>iron.jpg</td>
+				<td>200x200</td>
+				<td>256x256</td>
+				<td>3</td>
+				<td>196608 B = 192 kB</td>
+			</tr>
+			<tr>
+				<td><img src="textury/tex-horska_draha-4.jpg" alt="tex-horska_draha-4" border="0"></td>
+				<td>iron_floor.jpg</td>
+				<td>170x170</td>
+				<td>256x256</td>
+				<td>3</td>
+				<td>196608 B =192 kB</td>
+			</tr>
+			<tr><td colspan="5">Celkem použito:</td><td>491520 B =480 kB</td></tr>
+		  <tr><th colspan="6">Labuťový kolotoč</th></tr>
+		  <tr>
+				<td><img src="textury/tex-kolotoc-1.jpg" alt="tex-kolotoc-1" border="0"></td>
+				<td>tex-kov1.jpg</td>
+				<td>450x450</td>
+				<td>512x512</td>
+				<td>3</td>
+				<td>786432 B = 768 kB</td>
+			</tr>
+			<tr>
+				<td><img src="textury/tex-kolotoc-2.jpg" alt="tex-kolotoc-2" border="0"></td>
+				<td>tex-kov2.jpg</td>
+				<td>450x450</td>
+				<td>512x512</td>
+				<td>3</td>
+				<td>786432 B = 768 kB</td>
+			</tr>
+			<tr><td colspan="5">Celkem použito:</td><td>1572864 B = 1536 kB</td></tr>
+			<tr><td colspan="5">Celkové množství použité texturovací paměti:</td><td>2162688 B = 2112 kB</td></tr>
+		</table>
+		
+		<p><a href="index.html">Zpět na stránku úlohy</a>.</p>
+  </body>
+</html>

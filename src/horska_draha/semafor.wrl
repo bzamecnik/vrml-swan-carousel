@@ -1,0 +1,127 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	title "semafor"
+	info ["meno autora: Martin Galajda",
+		"datum: 13. december 2009"
+	]
+}
+
+NavigationInfo {
+	headlight TRUE
+}
+
+Viewpoint {
+	orientation	0 0 1 0
+	position 0 0 10
+}
+
+PROTO semaforProto [
+	eventIn	SFBool set_activeFromPos
+	eventIn	SFBool set_activeFromZach
+	eventOut SFBool	zelena_changed
+]{
+	Group {
+		children [
+			DEF	box Shape {
+				geometry Box {
+					size 2 2 2
+				}
+				appearance DEF kov Appearance {
+					material Material {
+						diffuseColor .37 .37 .37
+						specularColor .89 .89 .89
+						ambientIntensity .1
+						shininess .13
+					}
+				}
+			}
+			DEF	stojan
+			Transform {
+				translation	0 -2.5 0
+				children
+		    	Shape {
+					geometry Box {
+						size 0.4 3 0.4
+					}
+					appearance USE kov
+				}
+			}
+			DEF svetlo Transform {
+				translation	0 0 1
+				scale 0.9 0.9 0.9
+				children
+            	Shape {
+					geometry Sphere	{
+						radius 1
+					}
+					appearance Appearance {
+							material DEF materialSvetla Material {
+								emissiveColor 1,0,0
+								diffuseColor 1,0,0
+						}
+					}
+				}
+			}
+			DEF	obsluhaSemaforu	Script {
+				field SFBool zelena FALSE
+				field SFBool zmenene FALSE
+				field SFNode material USE materialSvetla
+				eventIn	SFBool set_activeFromZach IS set_activeFromZach
+				eventIn	SFBool set_activeFromPos IS set_activeFromPos
+				eventOut SFBool	zelena_changed IS zelena_changed
+				directOutput TRUE
+				mustEvaluate TRUE
+				url	"javascript:
+				function set_activeFromZach(aktivuje){
+					if(!aktivuje){
+						zmenene = true;
+						zelena_changed = false;
+						material.emissiveColor[0] =	material.diffuseColor[0] = 1; 
+						material.emissiveColor[1] =	material.diffuseColor[1] = 0;
+						material.emissiveColor[2] =	material.diffuseColor[2] = 0;
+					}else{
+						zmenene = false;
+						if(zelena){
+							zelena_changed = true;
+							material.emissiveColor[0] =	material.diffuseColor[0] = 0;
+							material.emissiveColor[1] =	material.diffuseColor[1] = 1;
+							material.emissiveColor[2] =	material.diffuseColor[2] = 0;
+						}
+						else{
+							zelena_changed = false;
+							material.emissiveColor[0] =	material.diffuseColor[0] = 1; 
+							material.emissiveColor[1] =	material.diffuseColor[1] = 0;
+							material.emissiveColor[2] =	material.diffuseColor[2] = 0;
+						}
+					}
+				}
+				function set_activeFromPos(vPohybe){
+					if(vPohybe){
+						zelena = false;
+						zelena_changed = false;
+						material.emissiveColor[0] =	material.diffuseColor[0] = 1; 
+						material.emissiveColor[1] =	material.diffuseColor[1] = 0;
+						material.emissiveColor[2] =	material.diffuseColor[2] = 0;
+					}
+					else{
+						if(!zmenene){
+							zelena = true;
+							zelena_changed = true;
+							material.emissiveColor[0] =	material.diffuseColor[0] = 0;
+							material.emissiveColor[1] =	material.diffuseColor[1] = 1;
+							material.emissiveColor[2] =	material.diffuseColor[2] = 0;
+						}
+						else
+							zmenene = false;	
+					}
+				}		
+				"
+			}
+		]
+	}
+}
+
+semaforProto {
+
+}

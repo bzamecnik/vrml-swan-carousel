@@ -1,0 +1,34 @@
+#VRML V2.0 utf8 CosmoWorlds V1.0
+
+WorldInfo
+{
+	title	"bumperCar"
+	info	["Author: Ivan Jankoviè", "Date: 31.10.2009"]
+}
+
+EXTERNPROTO	bumperCarHQ [
+	field SFNode texture
+] "bumperCarHQ.wrl#bumperCarHQ"
+
+
+PROTO bumperCar [
+	field SFInt32 lod 1
+	field SFNode texture NULL
+]  {
+
+	Switch { whichChoice IS lod
+    	choice [
+			DEF NOLOD bumperCarHQ {texture IS texture }     # varianta bez LOD
+            LOD   {
+				range	[40 80]
+				level [
+					USE NOLOD
+					Inline	{
+						url ["autodrom/bumperCarLQ.wrl"]
+					}
+					Group {}
+				]
+			}      
+    	]
+	} 
+}

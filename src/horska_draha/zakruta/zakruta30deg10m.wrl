@@ -1,0 +1,38 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	zakruta15deg10mP [
+	field MFString texturaBrvnaZakruta15deg10m
+	field SFColor farbaBrvnaZakruta15deg10m
+	exposedField SFInt32 loLodzakruta15deg10m
+]
+"zakruta15deg10m.wrl"
+
+PROTO zakruta30deg10mP [
+	field MFString texturaBrvnaZakruta30deg10m	"../textury/palisandr_indicky.jpg"
+	field SFColor farbaBrvnaZakruta30deg10m  0.453 0.367 0.312
+	exposedField SFInt32 loLodZakruta30deg10m 0
+]{
+	DEF	zakruta30deg10m Group {
+		children [
+			Transform {
+            	rotation 0 0 1 0
+				children
+				DEF	zakruta15deg10m zakruta15deg10mP {
+					texturaBrvnaZakruta15deg10m	IS texturaBrvnaZakruta30deg10m
+					farbaBrvnaZakruta15deg10m IS farbaBrvnaZakruta30deg10m
+					loLodzakruta15deg10m IS	loLodZakruta30deg10m
+				}
+			}
+			Transform {
+				rotation 0 0 1 0.262
+				children
+				USE	zakruta15deg10m
+			}
+		]
+	}
+}

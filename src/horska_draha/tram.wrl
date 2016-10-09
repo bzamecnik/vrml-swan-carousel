@@ -1,0 +1,54 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+PROTO tram [
+	field MFString texturaBrvna "textury/palisandr_indicky.jpg"
+	field SFColor farbaBrvna 0.453 0.367 0.312
+	exposedField SFInt32 lod 0
+]{
+	Switch {
+		whichChoice	IS lod
+		choice [
+			DEF sTexturou Group {
+				children
+				Shape {
+					geometry Box {
+						size 0.2 0.05 1.4
+					}
+					appearance Appearance	{
+						texture	ImageTexture {
+							url	IS texturaBrvna
+						}
+					}
+				}
+			}
+			LOD	{
+				range [10,100]
+				level [
+					USE	sTexturou
+					Group {
+						children
+						Shape {
+							geometry Box {
+								size 0.2 0.05 1.4
+							}
+							appearance Appearance	{
+								material Material {
+									diffuseColor IS	farbaBrvna
+								}
+							}
+						}
+					}
+					Group {
+
+					}
+				]
+			}
+			
+		]
+	}
+}

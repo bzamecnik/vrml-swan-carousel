@@ -1,0 +1,723 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Bohumir Zamecnik", "Date: 23.11.2009"]
+	title "Labuti kolotoc - hydraulicke rameno se sedackou"
+}
+
+EXTERNPROTO	Labut [
+	field SFBool funkcniLabut
+	eventOut SFTime touchTime
+	eventOut SFFloat hodnotaPaky_changed
+	eventOut SFBool tlacitkoZapnuto_changed
+	eventOut SFTime tlacitkoTouchTime_changed
+	eventIn SFFloat set_initHodnotaPaky
+	eventIn SFBool set_aktivatorPovolen
+	eventIn SFBool set_panelPovolen
+	eventIn SFBool set_senzoryPovoleny
+] "labut.wrl#Labut"
+
+EXTERNPROTO Pauzovadlo [
+	eventIn SFTime set_pocatek
+	eventIn SFTime set_periodaCasovace
+	eventIn	SFBool zapni
+	eventIn	SFTime prepni
+	eventIn	SFBool set_pauza
+	eventOut SFTime startTime_changed
+	eventOut SFTime stopTime_changed
+	eventOut SFBool zapnuto_changed
+] "pauza.wrl#Pauzovadlo"
+
+PROTO Lozisko [
+	field SFFloat polomer 0.05
+	field SFFloat sirka 0.1
+	field SFNode material NULL
+] {
+	Shape {
+		geometry Cylinder {
+			radius IS polomer
+			height IS sirka
+		}
+		appearance Appearance {
+			material IS material
+		}
+	}
+}
+
+PROTO Pist_jednoduchy
+[
+	field SFFloat zakladni_delka_pistu 1
+	field SFFloat delka_pistu 1
+	eventIn SFFloat set_delka_pistu
+	field SFNode material NULL
+]
+{
+    LOD {
+		range [ 15 ]
+		level [
+			# level 0
+			DEF Pist_LOD0 Group {
+				children [
+					DEF Delka_pistu Transform {
+						children
+						# pist
+    					LOD {
+    						range [ 20 ]
+							level [
+								# level 0
+								DEF Valec_LOD0 Shape {
+									geometry DEF Vnejsi_pist Cylinder {
+										radius 0.05
+										height 1
+									}
+									appearance Appearance {
+										material IS material
+									}
+								}
+								# level 1 - box misto valce
+								Shape {
+									geometry Box {
+										size 0.1 1 0.1
+									}
+									appearance Appearance {
+										material IS material
+									}
+								}
+							]
+						}
+					}
+					DEF Lozisko1 Transform {
+						rotation 1 0 0 1.570796
+						translation	0 0.5 0
+						children
+						Lozisko {material IS material}
+					}
+					DEF Lozisko2 Transform {
+						rotation 1 0 0 1.570796
+						translation	0 -0.5 0
+						children
+						Lozisko {material IS material}
+					}
+				]
+			}
+			# level 1 - bez lozisek
+			USE	Delka_pistu
+		]
+	}
+	DEF Rizeni_pistu Script {
+		field SFNode Delka_pistu USE Delka_pistu
+		field SFNode Lozisko1 USE Lozisko1
+		field SFNode Lozisko2 USE Lozisko2
+		field SFFloat zakladni_delka_pistu IS zakladni_delka_pistu
+		eventIn SFFloat set_delka_pistu IS set_delka_pistu # delka az 2*delka
+		eventOut SFFloat delka_pistu_changed
+		url	"javascript:
+			function set_delka_pistu(delka, cas) {
+				Delka_pistu.scale.y = delka;
+				var pul_delky = delka * 0.5;
+				Lozisko1.translation.y = pul_delky;
+				Lozisko2.translation.y = -pul_delky;
+			}
+		"
+	}
+	ROUTE Rizeni_pistu.delka_pistu_changed TO Rizeni_pistu.set_delka_pistu
+}
+
+
+PROTO Pist [
+	field SFFloat delka_jednoho_pistu 1
+	field SFFloat celkova_delka_pistu 1
+	eventIn SFFloat set_celkova_delka_pistu
+	eventOut SFFloat celkova_delka_pistu_changed
+	field SFNode material NULL
+]
+{
+	Group {
+		children [
+			Shape {
+				geometry DEF Vnejsi_pist Cylinder {
+					radius 0.05
+					height IS delka_jednoho_pistu
+				}
+				appearance Appearance {
+					material IS material
+				}
+			}
+			DEF Vnitrni_pist Transform {
+				children
+				Shape {
+					geometry Cylinder {
+						radius 0.025
+						height IS delka_jednoho_pistu
+					}
+					appearance Appearance {
+						material IS material
+					}
+				}
+			}
+		]
+	}
+	DEF Rizeni_pistu Script {
+		field SFNode vnitrni_pist USE Vnitrni_pist
+		field SFNode Vnejsi_pist USE Vnejsi_pist
+		field SFFloat delka_jednoho_pistu IS delka_jednoho_pistu
+		eventIn SFFloat set_celkova_delka_pistu IS set_celkova_delka_pistu # delka az 2*delka
+		eventOut SFFloat celkova_delka_pistu_changed IS celkova_delka_pistu_changed
+		url	"javascript:
+			function set_celkova_delka_pistu(celkova_delka, cas) {
+				delka_jednoho_pistu = celkova_delka;
+				var posun = 0;
+				if ((celkova_delka >= delka_jednoho_pistu) && (celkova_delka <= 2*delka_jednoho_pistu)) {
+					posun = celkova_delka - delka_jednoho_pistu;
+				}
+				vnitrni_pist.translation = new SFVec3f(0, posun, 0);
+			}
+		"
+	}
+}
+
+PROTO Sedacka [
+	field SFNode materialDrzaku NULL
+	field MFNode labut []
+] {
+	Transform {
+		translation	0 0.5 0
+		children
+		Group {
+			children [
+    			LOD {
+    				range [ 40 ]
+					level [
+						# level 0
+						DEF Sedacka_LOD0 Group {
+							children [
+								DEF Labutova_sedacka Transform {
+									translation	0 -0.35 0
+									children IS labut
+								}
+								DEF Drzak_sedacky Transform {
+									rotation 0 0 1 3.141593
+									translation	0 -0.4 0
+									children
+									Shape {
+										geometry Cone {
+											bottomRadius 0.2
+											height 0.2
+										}
+										appearance Appearance {
+											material IS materialDrzaku
+										}
+									}
+								}
+							]
+						}
+						# level 1 - bez drzaku
+						USE	Labutova_sedacka
+					]
+				}
+    		]
+		}
+	}
+}
+
+PROTO Rameno
+[
+	#exposedField SFFloat delka_ramena 5
+	field SFFloat uhel_zvednuti_nosniku 0.8
+	eventIn SFFloat set_uhel_zvednuti_nosniku
+	field SFFloat uhel_zvednuti_nosniku_min 0.4
+	field SFFloat uhel_zvednuti_nosniku_max 1.85
+	field SFFloat vyska_uchyceni_ramena 1.5
+	field SFFloat vyska_uchyceni_pistu 0.5
+	field SFFloat polomer_zakladny_rotoru 0.5
+	field SFFloat uhel_zaklonu_rotoru 0.165149
+	field SFFloat sbc 1 # vzdalenost od upevneni nosniku po upevneni pistu k nosniku
+	field SFFloat tloustka_nosniku 0.075
+	field SFNode Umisteni_sedacky NULL
+	field SFNode material NULL
+#	field MFNode labutMF []	# TODO - jak hodit SFNode do children?
+#	field SFNode labut NULL
+	field SFInt32 cisloRamene 0
+	field SFInt32 pocetRamen 8
+	field SFTime periodaZvedacihoCasovace 10.0
+	eventOut SFInt32 aktivniRameno_changed
+	eventOut SFTime otaceniAktivni_changed
+	eventIn SFBool set_labutAktivni
+	eventIn SFBool set_labutPripravena
+	eventIn SFTime prepniAutomatickeZvedani
+	eventIn SFTime spustitRamenoDolu
+	eventIn	SFBool set_jePauza
+]
+{
+	Group {
+		children [
+			# Hlavni nosnik
+			DEF Hlavni_nosnik_umisteni_1_umisteni_2 Transform {
+				children [
+					DEF Lozisko_nosniku LOD {
+    					range [ 25 ]
+						level [
+							# level 0
+							DEF Lozisko_LOD0 Transform {
+								scale 1 2 1
+								rotation 1 0 0 1.570796
+								translation	0 0 0
+								children
+								Lozisko {
+									polomer IS tloustka_nosniku
+									sirka IS tloustka_nosniku
+									material IS material
+								}
+							}
+							# level 1 - lozisko neni videt
+							Group {}
+						]
+					}
+					DEF Hlavni_nosnik_umisteni_1 Transform {
+						# nosnik je ukotven v horni casti rotoru
+						# translation se nastavuje v initialize()
+						# nosnik se muze pohybovat nahoru-dolu v rozmezi 90 stupnu
+						# tj. rotace 0 0 1 0 az 0 0 1 1.570796
+						# rotation se nastavuje v initialize()
+						#rotation IS	uhel_zvednuti_nosniku
+						center 0 2.5 0
+						translation	0 -2.5 0
+						children [
+							#DEF Hlavni_nosnik_umisteni_1_umisteni_2 Transform {
+							# nosnik je spusten dolu do urovne podlahy
+							#rotation 0 0 1 -0.28
+							#children
+							Transform {
+								# nosnik je jednim koncem pripevnen k rotoru
+								#rotation 0 0 1 -1.570796
+								translation	0 5 0
+								children
+								DEF Hlavni_nosnik LOD {
+    								range [25]
+									level [
+										# level 0
+										DEF Hlavni_nosnik_LOD0 Shape {
+											geometry Cylinder {
+												radius IS tloustka_nosniku
+												height 5
+											}
+											appearance Appearance {
+												material IS material #CervenyPovrch {}
+											}
+										}
+										# level 1 - box misto valce
+										# Pozn.: Upravovat pres initialize() size boxu nefunguje... :/
+										# Proto mame kolem toho jeste Transform.
+										DEF Hlavni_nosnik_LOD1 Transform {
+											children
+											Shape {
+												geometry Box {}
+												appearance Appearance {
+													material IS material #CervenyPovrch {}
+												}
+											}
+										}
+									]
+								}
+							}
+							Transform {
+								translation	0 7.5 0
+								children [
+									USE Lozisko_nosniku,
+									DEF	Umisteni_sedacky Transform {
+										children [
+											DEF LabutiViewpoint Viewpoint {
+												position 0 0.8 -0.25
+												orientation 0 1 0.1 3.14
+												fieldOfView	1
+											}
+											DEF LabutiNavigation NavigationInfo {
+												type ["FLY"]
+												speed 0
+												headlight FALSE
+											}
+											Sedacka	{
+												materialDrzaku IS material
+												#labut IS labutMF
+												labut [DEF LabutNaRameni Labut {}]
+											}
+										]
+									}
+								]
+							}
+						]
+						#}	
+					}
+				]
+			}
+			# TODO: hydraulicky pist
+			# - dva dily, ktere budou do sebe zajizdet
+			#   - stejne dlouho, jeden tlustsi
+			#   - reprezentovany pomoci valcu
+			# - delka a uhel se bude menit podle uhlu zvednuti hlavniho nosniku ramena
+
+			DEF Umisteni_pistu_3 Transform {
+				# pist je ukotven v horni casti rotoru
+				# translation se nastavuje v initialize()
+				children
+				DEF Umisteni_pistu_2 Transform {
+					# pist se muze pohybovat nahoru-dolu podle nosniku
+					# tj. rotace 0 0 1 0 az 0 0 1 1.570796
+					center 0 0.5 0
+					translation	0 -0.5 0
+					children
+					DEF Umisteni_pistu_1 Transform {
+						# pist je jednim koncem pripevnen k rotoru, druhym k nosniku
+						# translation se nastavuje v initialize()
+						children
+						DEF Pist_pod_ramenem Pist_jednoduchy {
+							material IS material
+						}
+					}
+				}
+			}
+		]
+	}
+	DEF	Casovac_ramene TimeSensor {
+		cycleInterval IS periodaZvedacihoCasovace
+		loop TRUE
+		startTime -1
+		stopTime 0
+	}
+	DEF	Casovac_ramene_jeden_pohyb TimeSensor {
+		cycleInterval IS periodaZvedacihoCasovace
+		startTime -1
+		stopTime 0
+	}
+	DEF	Cos_interpolator Script	{
+		eventIn	SFFloat	set_fraction
+		eventOut SFFloat value_changed
+		url "javascript:
+		function set_fraction(fraction) {
+			value_changed = 0.5*(1-Math.cos(Math.PI*fraction));
+		}
+		"
+	}
+#	DEF	Zigzag_interpolator Script	{
+#		eventIn	SFFloat	set_fraction
+#		eventOut SFFloat value_changed
+#		url "javascript:
+#		function set_fraction(fraction) {
+#			value_changed = 1 - Math.abs(2*fraction - 1);
+#		}
+#		"
+#	}
+	DEF	Zigzag_interpolator ScalarInterpolator {
+		key	[0 0.5 1]
+		keyValue [0 1 0]
+	}
+	DEF	Fazovy_posun Script	{
+		field SFFloat phase 0
+		eventIn	SFFloat	set_phase
+		field SFBool inverted FALSE
+		eventIn	SFBool	set_inverted
+		eventIn	SFFloat	set_fraction
+		eventOut SFFloat value_changed
+		url "javascript:
+		function set_phase(value) {
+			phase = value;
+		}
+		function set_inverted(value) {
+			inverted = value;
+		}
+		function set_fraction(fraction) {
+			var value = inverted ? 1 - (fraction + phase) : fraction + phase;
+			value_changed = value;
+		}
+		"
+	}
+	DEF	PauzovadloAutomatickyPohyb Pauzovadlo {}
+	DEF	PauzovadloJedenPohyb Pauzovadlo {}
+	DEF Rizeni_ramene Script {
+		field SFNode Hlavni_nosnik_umisteni_1 USE Hlavni_nosnik_umisteni_1
+		field SFNode Hlavni_nosnik_umisteni_1_umisteni_2 USE Hlavni_nosnik_umisteni_1_umisteni_2
+		field SFNode Umisteni_pistu_1 USE Umisteni_pistu_1
+		field SFNode Umisteni_pistu_2 USE Umisteni_pistu_2
+		field SFNode Umisteni_pistu_3 USE Umisteni_pistu_3
+		field SFNode pist USE Pist_pod_ramenem
+		field SFNode Umisteni_sedacky USE Umisteni_sedacky
+		field SFNode Hlavni_nosnik_LOD1 USE	Hlavni_nosnik_LOD1
+		field SFRotation rotace_zvednuti_nosniku 0 1 0 0.8
+	    field SFFloat uhel_zvednuti_nosniku IS uhel_zvednuti_nosniku
+		eventIn SFFloat set_uhel_zvednuti_nosniku IS set_uhel_zvednuti_nosniku
+		eventOut SFFloat delka_pistu_changed
+
+		eventIn SFTime set_ramenoKliknuto
+		field SFBool labutAktivni FALSE
+		eventIn SFBool set_labutAktivni IS set_labutAktivni
+		eventOut SFBool labutAktivni_changed
+		field SFBool labutPripravena TRUE
+		eventIn SFBool set_labutPripravena IS set_labutPripravena
+		eventOut SFBool senzoryPovoleny_changed
+		eventOut SFBool labutPripravena_changed
+		field SFInt32 cisloRamene IS cisloRamene
+		field SFInt32 pocetRamen IS pocetRamen
+		field SFTime periodaZvedacihoCasovace IS periodaZvedacihoCasovace
+		eventOut SFInt32 aktivniRameno_changed IS aktivniRameno_changed
+		eventIn SFTime set_otaceniAktivni
+		eventOut SFTime otaceniAktivni_changed IS otaceniAktivni_changed
+		field SFNode LabutNaRameni USE LabutNaRameni
+		field SFNode Rizeni_ramene USE Rizeni_ramene
+
+		field SFNode PauzovadloAutomatickyPohyb USE PauzovadloAutomatickyPohyb
+		field SFNode PauzovadloJedenPohyb USE PauzovadloJedenPohyb
+		eventIn	SFBool set_jePauza IS set_jePauza
+		eventOut SFBool jePauza_changed
+
+		# interpolator
+		field SFFloat uhel_zvednuti_nosniku_max IS uhel_zvednuti_nosniku_max
+		field SFFloat uhel_zvednuti_nosniku_min IS uhel_zvednuti_nosniku_min
+		field SFFloat uhel_min 0
+		field SFFloat uhel_rozsah 0
+		eventIn	SFFloat	set_uhel_zvednuti_fraction
+		eventOut SFFloat uhel_zvednuti_value_changed
+		field SFBool ramenoZvedanoAutomaticky TRUE
+		field SFBool zvedaniRamenaZapnuto FALSE
+		eventIn	SFTime prepniAutomatickeZvedani IS prepniAutomatickeZvedani
+		field SFNode Casovac_ramene USE	Casovac_ramene
+		field SFNode Casovac_ramene_jeden_pohyb USE	Casovac_ramene_jeden_pohyb
+		field SFNode Zigzag_interpolator USE Zigzag_interpolator
+		field SFNode Fazovy_posun USE Fazovy_posun
+		eventIn SFTime spustitRamenoDolu IS	spustitRamenoDolu
+
+		eventOut SFFloat initHodnotaPaky_changed
+
+		directOutput TRUE
+
+		field SFFloat hb IS vyska_uchyceni_ramena # vyska upevneni nosniku od spodku rotoru
+		field SFFloat hc IS vyska_uchyceni_pistu # vyska upevneni pistu od spodku rotoru
+		field SFFloat polomer_zakladny_rotoru IS polomer_zakladny_rotoru
+		field SFFloat uhel_zaklonu_rotoru IS uhel_zaklonu_rotoru
+		field SFFloat sbc IS sbc # vzdalenost od upevneni nosniku po upevneni pistu k nosniku
+		field SFFloat tloustka_nosniku IS tloustka_nosniku
+
+		field SFFloat rb 1 # vzdalenost upevneni nosniku od vertikalni osy
+		field SFFloat rc 1 # vzdalenost upevneni pistu od vertikalni osy
+
+		url	"javascript:
+		function initialize() {
+			var t = Math.tan(uhel_zaklonu_rotoru); // nepatrna optimalizace: spolecny podvyraz
+			rb = polomer_zakladny_rotoru - hb * t;
+			rc = polomer_zakladny_rotoru - hc * t;
+
+			Hlavni_nosnik_LOD1.scale = new SFVec3f(0.8*tloustka_nosniku, 2.5, 0.8*tloustka_nosniku);
+
+			Umisteni_pistu_3.translation = new SFVec3f(-rc, hc, 0);
+			Hlavni_nosnik_umisteni_1_umisteni_2.translation = new SFVec3f(-rb, hb, 0);
+			set_uhel_zvednuti_nosniku(uhel_zvednuti_nosniku);
+//			uhel_rozsah = rameno.uhel_zvednuti_nosniku_max - rameno.uhel_zvednuti_nosniku_min;
+//			uhel_min = rameno.uhel_zvednuti_nosniku_min;
+			initHodnotaPaky_changed = uhel_nosniku_na_hodnotu_paky(uhel_zvednuti_nosniku);
+		}
+		// prepocitej uhel pistu a vysunuti podle uhlu nosniku
+		function set_uhel_zvednuti_nosniku(uhel_nosniku, cas) {
+			//print('set_uhel_zvednuti_nosniku('+uhel_nosniku+'): ' + labutAktivni);
+			if (uhel_nosniku < uhel_zvednuti_nosniku_min) {
+				uhel_nosniku = uhel_zvednuti_nosniku_min;
+			} else if (uhel_nosniku > uhel_zvednuti_nosniku_max) {
+				uhel_nosniku = uhel_zvednuti_nosniku_max;
+			}
+
+			uhel_zvednuti_nosniku = uhel_nosniku;
+			Hlavni_nosnik_umisteni_1.rotation.angle = uhel_nosniku;
+			// beta = uhel ramena (od svisle osy smerem dolu)
+			// gama = uhel pistu (dtto)
+			var beta = uhel_nosniku;
+			var dc = rb-rc+sbc*Math.sin(beta);
+			var h = hb-hc+sbc*Math.cos(beta);
+			var gama = Math.atan(dc/h);
+			Umisteni_pistu_2.rotation = new SFRotation(0, 0, 1, gama);
+			Umisteni_sedacky.rotation = new SFRotation(0, 0, 1, -beta);
+			// delka od idealniho stredu napojeni do nosniku, do vylezu z nosniku
+			var x = tloustka_nosniku / Math.sin(gama-beta);
+			
+			// spocitat delku pistu, nastavit podle toho vysunuti
+			var delka_pistu = dc / Math.sin(gama) + x;
+			delka_pistu_changed = delka_pistu;
+			Umisteni_pistu_1.translation = new SFVec3f(0, delka_pistu, 0);
+			Umisteni_pistu_2.center = new SFVec3f(0, delka_pistu*0.5, 0);
+			Umisteni_pistu_2.translation = new SFVec3f(0, -delka_pistu*0.5, 0);
+		}
+		function set_ramenoKliknuto(value) {
+			aktivniRameno_changed = cisloRamene;
+			labutAktivni = !labutAktivni;
+			labutAktivni_changed = labutAktivni;
+		}
+		function set_labutAktivni(value, time) {
+			labutAktivni = value;
+			labutAktivni_changed = value;
+//			print('Rameno['+cisloRamene+'].set_labutAktivni('+value+')');
+		}
+		function set_labutPripravena(value, time) {
+			labutPripravena = value;
+			labutPripravena_changed = value;
+//			print('Rameno['+cisloRamene+'].set_labutPripravena('+value+')');
+		}
+		function set_otaceniAktivni(value, time) {
+			prepniAutomatickeZvedani(time);
+			otaceniAktivni_changed = value;
+		}
+		function prepniAutomatickeZvedani(time) {
+			//print('['+cisloRamene+'].prepniAutomatickeZvedani('+time+')' + ' ' + labutAktivni + ' ' + labutPripravena);
+			//ramenoZvedanoAutomaticky = !labutAktivni && !labutPripravena;
+			ramenoZvedanoAutomaticky = !labutAktivni;
+			if (ramenoZvedanoAutomaticky) {
+				zvedaniRamenaZapnuto = !zvedaniRamenaZapnuto;
+				//print('  ['+cisloRamene+'].zvedaniRamenaZapnuto: ' + zvedaniRamenaZapnuto);
+				var chaotickaKonstanta = 1.3; // aby se ramena nezvedala prilis pravidelne
+				var offset = chaotickaKonstanta * periodaZvedacihoCasovace * cisloRamene / pocetRamen;
+				if (zvedaniRamenaZapnuto) {
+					Browser.addRoute(
+						Casovac_ramene, 'fraction_changed',
+						Zigzag_interpolator, 'set_fraction'
+					);
+					//Casovac_ramene.set_startTime = time + offset;
+					PauzovadloAutomatickyPohyb.set_pocatek = offset;
+					Casovac_ramene.loop = true;
+					PauzovadloAutomatickyPohyb.zapni = true;
+				} else {
+					Browser.deleteRoute(
+						Casovac_ramene, 'fraction_changed',
+						Zigzag_interpolator, 'set_fraction'
+					);
+					//Casovac_ramene.set_stopTime = time + periodaZvedacihoCasovace / 4;
+					PauzovadloAutomatickyPohyb.zapni = false;
+					Casovac_ramene.loop = false;
+				}
+			}
+		}
+		function spustitRamenoDolu(time) {
+			//print('[' + cisloRamene + '] spustitRamenoDolu()' + (labutAktivni ? '*' : ''));
+			var zdroj = uhel_nosniku_na_hodnotu_paky(uhel_zvednuti_nosniku);
+			if (zdroj > 0.0001) {
+//				print(zdroj + ' v toleranci');
+				Fazovy_posun.set_inverted = TRUE;
+				Fazovy_posun.set_phase = 1 - zdroj;
+//				var cas_cil = time + zdroj * periodaZvedacihoCasovace;
+//				Casovac_ramene_jeden_pohyb.startTime = time;
+//				Casovac_ramene_jeden_pohyb.stopTime = cas_cil;
+				PauzovadloJedenPohyb.set_pocatek = 0;
+				PauzovadloJedenPohyb.set_periodaCasovace = zdroj * periodaZvedacihoCasovace;
+				PauzovadloJedenPohyb.zapni = true;
+			} else {
+//				print(zdroj + ' mimo');
+//				Casovac_ramene_jeden_pohyb.startTime = -1;
+//				Casovac_ramene_jeden_pohyb.stopTime = 0;
+				PauzovadloJedenPohyb.zapni = false;
+				set_uhel_zvednuti_nosniku(hodnota_paky_na_uhel_nosniku(0.0), time);
+			}
+		}
+		// paka: 0.0 az 1.0
+		function hodnota_paky_na_uhel_nosniku(hodnota) {
+			uhel_rozsah = uhel_zvednuti_nosniku_max - uhel_zvednuti_nosniku_min;
+			return uhel_zvednuti_nosniku_min + uhel_rozsah * (1 - hodnota);
+		}
+		function uhel_nosniku_na_hodnotu_paky(uhel) {
+			uhel_rozsah = uhel_zvednuti_nosniku_max - uhel_zvednuti_nosniku_min;
+			return 1 - (uhel - uhel_zvednuti_nosniku_min) / uhel_rozsah;
+		}
+		// interpolator
+		function set_uhel_zvednuti_fraction(x,time) {
+			uhel_zvednuti_value_changed = hodnota_paky_na_uhel_nosniku(x);
+		}
+		function set_jePauza(value) {
+			jePauza_changed = value;
+			senzoryPovoleny_changed = !value;
+		}
+		"
+	}
+
+	#ROUTE Hlavni_nosnik_umisteni_1.rotation TO	Rizeni_ramene.set_uhel_zvednuti_nosniku
+	#ROUTE Hlavni_nosnik_umisteni_1.rotation_changed TO Rizeni_ramene.set_uhel_zvednuti_nosniku
+	ROUTE Rizeni_ramene.delka_pistu_changed	TO Pist_pod_ramenem.set_delka_pistu
+
+	ROUTE LabutNaRameni.hodnotaPaky_changed TO Rizeni_ramene.set_uhel_zvednuti_fraction
+	ROUTE Rizeni_ramene.uhel_zvednuti_value_changed	TO Rizeni_ramene.set_uhel_zvednuti_nosniku
+	ROUTE LabutNaRameni.touchTime TO Rizeni_ramene.set_ramenoKliknuto
+	ROUTE Rizeni_ramene.labutAktivni_changed TO LabutiViewpoint.set_bind
+	ROUTE Rizeni_ramene.labutAktivni_changed TO LabutiNavigation.set_bind
+	ROUTE Rizeni_ramene.senzoryPovoleny_changed TO LabutNaRameni.set_senzoryPovoleny
+	ROUTE Rizeni_ramene.labutPripravena_changed TO	LabutNaRameni.set_aktivatorPovolen
+	ROUTE Rizeni_ramene.labutAktivni_changed TO	LabutNaRameni.set_panelPovolen
+	#ROUTE Casovac_ramene.fraction_changed TO Zigzag_interpolator.set_fraction
+	ROUTE Zigzag_interpolator.value_changed	TO Cos_interpolator.set_fraction
+	ROUTE Cos_interpolator.value_changed TO	Rizeni_ramene.set_uhel_zvednuti_fraction
+	ROUTE LabutNaRameni.tlacitkoTouchTime_changed TO Rizeni_ramene.set_otaceniAktivni
+	ROUTE Rizeni_ramene.initHodnotaPaky_changed	TO LabutNaRameni.set_initHodnotaPaky
+	
+	#ROUTE LabutNaRameni.tlacitkoTouchTime_changed TO Rizeni_ramene.spustitRamenoDolu # DEBUG
+	ROUTE Casovac_ramene_jeden_pohyb.fraction_changed TO Fazovy_posun.set_fraction
+	ROUTE Fazovy_posun.value_changed TO Cos_interpolator.set_fraction
+
+	ROUTE PauzovadloJedenPohyb.startTime_changed TO	Casovac_ramene_jeden_pohyb.startTime
+	ROUTE PauzovadloJedenPohyb.stopTime_changed TO	Casovac_ramene_jeden_pohyb.stopTime
+	ROUTE Rizeni_ramene.jePauza_changed	TO PauzovadloJedenPohyb.set_pauza
+
+	ROUTE PauzovadloAutomatickyPohyb.startTime_changed TO Casovac_ramene.startTime
+	ROUTE PauzovadloAutomatickyPohyb.stopTime_changed TO Casovac_ramene.stopTime
+	ROUTE Rizeni_ramene.jePauza_changed	TO PauzovadloAutomatickyPohyb.set_pauza
+}
+
+# proxy
+PROTO KonkretniRameno [
+	field SFFloat uhel_zvednuti_nosniku 0
+	field SFInt32 cisloRamene 0
+	field SFInt32 pocetRamen 8
+	field SFNode barevnyMaterial NULL
+	eventOut SFInt32 aktivniRameno_changed
+	eventOut SFTime otaceniAktivni_changed
+	eventIn SFBool set_labutAktivni
+	eventIn SFBool set_labutPripravena
+	eventIn SFTime prepniAutomatickeZvedani
+	eventIn SFTime spustitRamenoDolu
+	eventIn	SFBool set_jePauza
+]
+{
+	DEF R Rameno {
+		uhel_zvednuti_nosniku IS uhel_zvednuti_nosniku
+		cisloRamene IS cisloRamene
+		material IS barevnyMaterial
+		pocetRamen IS pocetRamen
+	}
+	DEF Rizeni Script {
+		eventIn SFInt32 set_aktivniRameno
+		eventOut SFInt32 aktivniRameno_changed IS aktivniRameno_changed
+		eventIn SFTime set_otaceniAktivni
+		eventOut SFTime otaceniAktivni_changed IS otaceniAktivni_changed
+		eventIn SFBool set_labutAktivni IS set_labutAktivni
+		eventOut SFBool labutAktivni_changed
+		eventIn SFBool set_labutPripravena IS set_labutPripravena
+		eventOut SFBool labutPripravena_changed
+		field SFInt32 cisloRamene IS cisloRamene
+		eventIn	SFTime prepniAutomatickeZvedani IS prepniAutomatickeZvedani
+		eventOut SFTime prepniAutomatickeZvedani_changed
+		eventIn	SFTime spustitRamenoDolu IS spustitRamenoDolu
+		eventOut SFTime spustitRamenoDolu_changed
+		eventIn	SFBool set_jePauza IS set_jePauza
+		eventOut SFBool jePauza_changed
+		url	"javascript:
+		function set_aktivniRameno(value) {aktivniRameno_changed = value;}
+		function set_otaceniAktivni(value) {otaceniAktivni_changed = value;}
+		function set_labutAktivni(value) {labutAktivni_changed = value;}
+		function set_labutPripravena(value) {labutPripravena_changed = value;}
+		function set_senzoryPovoleny(value) {senzoryPovoleny_changed = value;}
+		function prepniAutomatickeZvedani(value) {prepniAutomatickeZvedani_changed = value;}
+		function spustitRamenoDolu(value) {spustitRamenoDolu_changed = value;}
+		function set_jePauza(value) {jePauza_changed = value;}
+		"
+	}
+	ROUTE R.aktivniRameno_changed TO Rizeni.set_aktivniRameno
+	ROUTE R.otaceniAktivni_changed TO Rizeni.set_otaceniAktivni
+	ROUTE Rizeni.labutAktivni_changed TO R.set_labutAktivni
+	ROUTE Rizeni.labutPripravena_changed TO R.set_labutPripravena
+	ROUTE Rizeni.prepniAutomatickeZvedani_changed TO R.prepniAutomatickeZvedani
+	ROUTE Rizeni.spustitRamenoDolu_changed TO R.spustitRamenoDolu
+	ROUTE Rizeni.jePauza_changed TO R.set_jePauza
+}
+
+Rameno {}

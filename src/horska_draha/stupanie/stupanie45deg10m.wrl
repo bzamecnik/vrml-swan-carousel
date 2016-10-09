@@ -1,0 +1,87 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tram [
+	field MFString texturaBrvna
+	field SFColor farbaBrvna
+	exposedField SFInt32 lod
+]
+"../tram.wrl"
+
+PROTO velkeStupanie45P [
+	field MFString	texturaBrvnaStupanie45deg10m "../textury/palisandr_indicky.jpg"
+	field SFColor farbaBrvnaStupanie45deg10m, 0.453 0.367 0.312
+	exposedField SFInt32 loLodStupanie45deg10m 0
+]{
+	DEF	velkeStupanie45 Group {
+		children[
+			DEF ZahnutaTyc Group {
+				children
+				Shape {
+					geometry Extrusion {
+						beginCap FALSE
+						endCap FALSE
+						crossSection [0 0, 0.1 0, 0.1 -0.05, 0 -0.05, 0 0]
+						spine [10 0 0,9.962 0.872 0, 9.848 1.736 0, 9.659 2.588 0, 9.397 3.42 0, 9.063 4.226 0, 8.66 5 0, 8.192 5.736 0, 7.66 6.428 0, 7.071 7.071 0]
+					}
+					appearance DEF kov Appearance {
+						material Material {
+							diffuseColor .15 .15 .15
+							specularColor .92 .91 .89
+							ambientIntensity 0
+							shininess .06
+						}
+					}
+				}
+			}
+			Transform {
+				translation	0 0 -1
+				children USE ZahnutaTyc
+			}
+			DEF pramy10Stupnov Group {
+				children [
+					DEF tram1 Transform {
+						translation 10.06 0.87 -0.525
+						rotation 0 0 1 1.657
+						children
+						tram {
+							texturaBrvna IS	texturaBrvnaStupanie45deg10m
+							farbaBrvna IS farbaBrvnaStupanie45deg10m
+							lod	IS loLodStupanie45deg10m
+						}
+					
+					}
+					Transform {
+						rotation 0 0 1 0.087
+						children
+						USE	tram1
+					}
+				]
+			}
+			DEF	pramy20Stupnov Group {
+				children [
+					Transform {			 
+						rotation 0 0 1 0.174
+						children
+						USE	pramy10Stupnov
+					}
+					Transform {			 
+						rotation 0 0 1 0.349
+						children
+						USE	pramy10Stupnov
+					}
+				]
+			}
+			Transform {
+				rotation 0 0 1 0.523
+				children
+				USE
+				pramy10Stupnov
+			}
+		]
+	}
+}

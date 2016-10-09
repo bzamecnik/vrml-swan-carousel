@@ -1,0 +1,70 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tramP [
+	field MFString texturaBrvna
+	field SFColor farbaBrvna
+	exposedField SFInt32 lod
+]
+"../tram.wrl"
+
+PROTO usek2mP [
+	field MFString textura2mTramu "../textury/palisandr_indicky.jpg"
+	field SFColor farba2mBrvna 0.453 0.367 0.312
+	exposedField SFInt32 loLodUsek2m 0
+
+]{
+	DEF	usek Transform {
+		translation	0 0 0								#definovanie 2-metroveho useku kolajnic
+		children [
+			Transform {
+				translation	0 0 0.5
+				children
+				DEF kolaj Shape {								#definovanie jednej kovovej kolajnice
+					geometry Box {size  2 0.1 0.05},
+					appearance DEF zelezo Appearance {
+						material Material {
+							diffuseColor .15 .15 .15
+							specularColor .92 .91 .89
+							ambientIntensity 0
+							shininess .06
+						}
+					}
+				},
+			}
+			Transform {
+				translation	 0 0 -0.5
+				children
+				USE	kolaj
+			}
+			Transform {
+				translation	-0.25 -0.05 0
+				children
+				DEF tram tramP {
+					texturaBrvna IS	textura2mTramu
+					lod	IS loLodUsek2m
+					farbaBrvna IS farba2mBrvna
+				}
+			}
+			Transform {
+				translation	0.25 -0.05 0
+				children
+				USE	tram
+			}
+			Transform {
+				translation	0.75 -0.05 0
+				children
+				USE	tram
+			}
+			Transform{
+				translation	-0.75 -0.05 0
+				children
+				USE	tram
+			}
+		]
+	}
+}

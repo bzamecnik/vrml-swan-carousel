@@ -1,0 +1,37 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	rovny18mP [
+	field MFString textura18mTramu
+	field SFColor farba18mTramu
+	exposedField SFInt32 loLodUsek18m
+]
+"rovny18m.wrl"
+
+PROTO rovny36mP [
+	field MFString textura36mTramu "../textury/palisandr_indicky.jpg"
+	field SFColor farba36mTramu 0.453 0.367	0.312
+	exposedField SFInt32 loLodUsek36m 0
+]{
+	DEF	rovny36m Group {
+		children [
+			Transform {
+				children
+				DEF	rovny18m rovny18mP {
+					textura18mTramu	IS textura36mTramu
+					farba18mTramu IS	farba36mTramu
+					loLodUsek18m IS loLodUsek36m
+				}
+			}
+			Transform {
+				translation	18 0 0
+				children
+				USE	rovny18m
+			}
+		]
+	}
+}

@@ -1,0 +1,61 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	zakruta15deg10mP [
+	field MFString texturaBrvnaZakruta15deg10m
+	field SFColor farbaBrvnaZakruta15deg10m
+	exposedField SFInt32 loLodzakruta15deg10m
+]
+"zakruta15deg10m.wrl"
+
+EXTERNPROTO	rovny6mP [
+	field MFString textura6mTramu
+	field SFColor farba6mTramu
+	exposedField SFInt32 loLodUsek6m
+]
+"../rovny/rovny6m.wrl"
+
+PROTO chicane15double6mP [
+	field MFString texturaTramuChicane15double6m "../textury/palisandr_indicky.jpg"
+	field SFColor farbaTramuChicane15double6m 0.453 0.367 0.312
+	exposedField SFInt32 loLodChicane15double6m 0
+]{
+	DEF	chicane Group {
+		children [
+			Transform {
+				rotation 0  1 0	1.57
+				translation	-3 0 5.475
+				children
+				DEF zakruta15deg10m Transform {
+					rotation 1 0 0 -1.57
+					translation	0 -0.05 0
+					children 
+					zakruta15deg10mP {
+						texturaBrvnaZakruta15deg10m IS texturaTramuChicane15double6m
+						farbaBrvnaZakruta15deg10m IS farbaTramuChicane15double6m
+						loLodzakruta15deg10m IS	loLodChicane15double6m
+					}
+				}
+			}
+			Transform {
+				translation	3 0 -5.475
+				rotation 0 1 0 -1.57
+				children
+				USE	zakruta15deg10m
+			}
+			Transform {
+				translation 0 0 0
+				children
+				DEF rovny6m rovny6mP {
+					textura6mTramu IS texturaTramuChicane15double6m
+					farba6mTramu IS	farbaTramuChicane15double6m
+					loLodUsek6m	IS loLodChicane15double6m
+				}
+			}
+		]
+	}
+}

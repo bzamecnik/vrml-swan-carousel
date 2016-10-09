@@ -1,0 +1,77 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+Viewpoint {
+	position 10 2 4
+}
+
+EXTERNPROTO	stupanie45deg10mP [
+	field MFString texturaBrvnaStupanie45deg10m
+	field SFColor farbaBrvnaStupanie45deg10m
+	exposedField SFInt32 loLodStupanie45deg10m
+]
+"stupanie45deg10m.wrl"
+
+EXTERNPROTO	tramP [
+	field MFString texturaBrvna
+	field SFColor farbaBrvna
+	exposedField SFInt32 lod
+]
+"../tram.wrl"						 
+
+ PROTO stupanie135deg10mP [
+	field MFString texturaBrvnaStupanie135deg10m "../textury/palisandr_indicky.jpg"
+	field SFColor farbaBrvnaStupanie135deg10m 0.453 0.367 0.312
+	exposedField SFInt32 loLodStupanie135deg10m 0
+ ]{
+	Group {
+		children [
+			Transform {
+				rotation 0 0 1 0
+				translation	0 0 0
+				children
+				DEF	stupanie45deg10m stupanie45deg10mP {
+					texturaBrvnaStupanie45deg10m IS texturaBrvnaStupanie135deg10m
+					farbaBrvnaStupanie45deg10m IS	farbaBrvnaStupanie135deg10m
+					loLodStupanie45deg10m	IS loLodStupanie135deg10m
+				}
+			}
+
+			Transform {
+				rotation 0 0 1 -0.785
+				translation	0 0 0
+				children
+				USE stupanie45deg10m
+			}
+			Transform {
+				rotation 0 0 1 -0.087
+				children
+				DEF tram Transform {
+				translation 10.06 0.87 -0.525
+				rotation 0 0 1 1.657
+					children
+					tramP {
+						texturaBrvna IS	texturaBrvnaStupanie135deg10m
+						farbaBrvna IS farbaBrvnaStupanie135deg10m
+						lod	IS loLodStupanie135deg10m
+					}
+				}	
+			}
+			Transform {
+				rotation 0 0 1 -1.57
+				children
+				USE	stupanie45deg10m
+			}
+			Transform {
+				rotation 0 0 1 -0.872
+				children
+				USE
+				tram
+			}
+		]
+	}
+}

@@ -1,0 +1,94 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+	info ["Author: Martin Galajda", "Date: 3.11.2009"]
+	title "Horska draha"
+}
+
+EXTERNPROTO	tramP [
+	field MFString texturaTramuKolmeho
+	field SFColor farbaTramuKolmeho
+	exposedField SFInt32 lodTramuKolmeho
+]
+"../tramKolmy.wrl"
+
+PROTO spojovaciKusP [
+	field MFString texturaTramuSpojovaciKus "../textury/palisandr_indicky.jpg"
+	field SFColor farbaTramuSpojovaciKus 0.453 0.367 0.312
+	exposedField SFInt32 loLodSpojovaciKus 0
+]{
+	DEF spojovaciKus Transform {
+		rotation 1 0 0 -1.57
+		children[
+			Transform {
+				children
+				DEF kolajnica Shape {
+					geometry Extrusion {
+						beginCap  FALSE
+						endCap FALSE
+						ccw	FALSE
+						crossSection [0 0, 0 0.1, -0.05 0.1, -0.05 0, 0 0]
+						spine [0 0 0,0.237 4.315 0.003]
+					}
+					appearance DEF kov Appearance {
+						material Material {
+							diffuseColor .15 .15 .15
+							specularColor .92 .91 .89
+							ambientIntensity 0
+							shininess .06
+						}
+					}
+				}
+			}
+			Transform {
+				translation	-1 0 0
+				children
+				USE	kolajnica
+			}
+
+			DEF tram Transform {
+				rotation 0 1 0 1.57
+				translation	-0.512 0.25 0
+				children
+				tramP {
+					texturaTramuKolmeho	IS texturaTramuSpojovaciKus
+					farbaTramuKolmeho IS farbaTramuSpojovaciKus
+					lodTramuKolmeho	IS loLodSpojovaciKus
+				}
+			}
+			DEF	tramy2 Transform {
+				translation	0.028 0.5 0
+				children [
+					Transform {
+						children
+						USE	tram
+					}
+					Transform {
+						translation	0.028 0.5 0
+						children
+						USE	tram
+					}
+				]
+			}
+			DEF	tramy4 Transform {
+				translation	0.055 1 0
+				children [
+					Transform {
+						children
+						USE	tramy2
+					}
+					Transform {
+						translation	0.055 1 0
+						children
+						USE	tramy2
+					}
+				]
+			}
+			Transform {
+				translation	0.165 3 0
+				children
+				USE	tramy2
+			}
+		]
+	}
+}
